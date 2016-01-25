@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0" />
+    <title>8 x 8 - 首页</title>
+    <!-- CSS  -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="lib/materialize.min.css">
+    <style>
+    * {
+        font-family: GillSans, Calibri, Trebuchet, Microsoft YaHei, sans-serif;
+    }
+    
+    .flex-body {
+        display: flex;
+        min-height: 100vh;
+        -webkit-flex-direction: column;
+        -moz-flex-direction: column;
+        -ms-flex-direction: column;
+        -o-flex-direction: column;
+        flex-direction: column;
+    }
+    
+    .container {
+        -webkit-flex: 1;
+        -moz-flex: 1;
+        -ms-flex: 1;
+        -o-flex: 1;
+        flex: 1;
+    }
+    </style>
+</head>
+
+<body class="flex-body">
+    <nav class="teal accent-4">
+        <div class="nav-wrapper">
+            <ul class="left">
+                <li><a href="square.html">自己</a></li>
+            </ul>
+            <ul class="brand-logo center">
+                <li><a href="">8 x 8</a></li>
+            </ul>
+            <ul class="right">
+                <li><a href="login.html">广场</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <ul class="collection with-header">
+            <li class="collection-header green lighten-5">账号安全</li>
+            <a class="collection-item modal-trigger" href="#modal-name">姓名<span class="badge">廖荣森</span></a>
+            <a class="collection-item modal-trigger" href="#modal-email">邮箱<span class="badge">1252715635@qq.com</span></a>
+            <a class="collection-item modal-trigger" href="#modal-password">登录密码</a>
+            <li class="collection-header green lighten-5">认证信息</li>
+            <a class="collection-item modal-trigger" href="#modal-major">专业<span class="badge">2012级通信工程</span></a>
+            <a class="collection-item modal-trigger" href="#modal-Ainfo">A<span class="badge">AAAAAAAAA-info</span></a>
+            <a class="collection-item modal-trigger" href="#modal-Binfo">B<span class="badge">BBBBBBBBB-info</span></a>
+        </ul>
+        <div id="modal-name" class="modal">
+            <div class="modal-content">
+                <p>修改姓名</p>
+                <div class="row">
+                    <div class="input-field col s8">
+                        <input value="廖荣森" type="text" pattern="^[\u4E00-\u9FFF]{2,6}$" class="validate">
+                        <label class="active">姓名</label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="#!" class=" modal-action modal-close waves-effect waves-light btn">修改</a>
+                <a href="#" class=" modal-action modal-close waves-effect green lighten-5 btn black-text">取消</a>
+            </div>
+        </div>
+        <div id="modal-email" class="modal">
+            <div class="modal-content">
+                <p>修改邮箱</p>
+                <div class="row">
+                    <div class="input-field col s8">
+                        <input value="1252715635@qq.com" type="email" pattern="(\w|\d)+@(\w|\d)+\.([a-z]+)" class="validate">
+                        <label class="active">邮箱</label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="#!" class=" modal-action modal-close waves-effect waves-light btn">修改</a>
+                <a href="#" class=" modal-action modal-close waves-effect green lighten-5 btn black-text">取消</a>
+            </div>
+        </div>
+        <div id="modal-password" class="modal">
+            <div class="modal-content">
+                <p>修改密码</p>
+                <div class="row">
+                    <div class="input-field col s8">
+                        <input type="password" pattern="[\w]{8,15}" class="validate">
+                        <label class="active">原密码</label>
+                    </div>
+                    <div class="input-field col s8">
+                        <input type="password" pattern="[\w]{8,15}" class="validate">
+                        <label class="active">新密码</label>
+                    </div>
+                    <div class="input-field col s8">
+                        <input type="password" pattern="[\w]{8,15}" class="validate">
+                        <label class="active">新密码确认</label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="#!" class=" modal-action modal-close waves-effect waves-light btn">修改</a>
+                <a href="#" class=" modal-action modal-close waves-effect green lighten-5 btn black-text">取消</a>
+            </div>
+        </div>
+        <div id="modal-major" class="modal">
+            <div class="modal-content">
+                <p>修改专业</p>
+                <div class="row">
+                    <div class="input-field col s5">
+                        <input value="通信工程" type="text" pattern='^[\u4E00-\u9FFF]+' class="validate">
+                        <label>专业</label>
+                    </div>
+                    <div class="input-field col s3">
+                        <!-- 匹配年份1900-2099 pattern = '^(19|20)(\d){2}$' -->
+                        <input value="2012" type="text" pattern='^(19|20)(\d){2}$' class="validate">
+                        <label>年份</label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="#!" class=" modal-action modal-close waves-effect waves-light btn">修改</a>
+                <a href="#" class=" modal-action modal-close waves-effect green lighten-5 btn black-text">取消</a>
+            </div>
+        </div>
+        <div id="modal-Ainfo" class="modal">
+            <div class="modal-content">
+                <p>修改A-info</p>
+                <div class="row">
+                    <div class="input-field col s8">
+                        <input value="AAAAAAAAA" type="text" pattern="" class="validate">
+                        <label class="active">A-info</label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="#!" class=" modal-action modal-close waves-effect waves-light btn">修改</a>
+                <a href="#" class=" modal-action modal-close waves-effect green lighten-5 btn black-text">取消</a>
+            </div>
+        </div>
+        <div id="modal-Binfo" class="modal">
+            <div class="modal-content">
+                <p>修改B-info</p>
+                <div class="row">
+                    <div class="input-field col s8">
+                        <input value="BBBBBBBBB" type="text" pattern="" class="validate">
+                        <label class="active">B-info</label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="#!" class=" modal-action modal-close waves-effect waves-light btn">修改</a>
+                <a href="#" class=" modal-action modal-close waves-effect green lighten-5 btn black-text">取消</a>
+            </div>
+        </div>
+    </div>
+    <footer class="page-footer teal accent-4" style="padding-top: 0;">
+        <div class="footer-copyright">
+            <div class="container">
+                Made by <a class="orange-text text-lighten-3" href="http://chengkang.pw">chengkang</a>
+            </div>
+        </div>
+    </footer>
+    <!--  Scripts-->
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="lib/materialize.min.js"></script>
+    <script>
+    $(document).ready(function() {
+        // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
+        $('.modal-trigger').leanModal();
+    });
+    </script>
+</body>
+
+</html>

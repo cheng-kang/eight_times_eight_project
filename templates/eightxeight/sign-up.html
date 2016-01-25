@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0" />
+    <title>8 x 8 - 首页</title>
+    <!-- CSS  -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="lib/materialize.min.css">
+    <style>
+    * {
+        font-family: GillSans, Calibri, Trebuchet, Microsoft YaHei, sans-serif;
+    }
+    
+    .flex-body {
+        display: flex;
+        min-height: 100vh;
+        -webkit-flex-direction: column;
+        -moz-flex-direction: column;
+        -ms-flex-direction: column;
+        -o-flex-direction: column;
+        flex-direction: column;
+    }
+    
+    .container {
+        -webkit-flex: 1;
+        -moz-flex: 1;
+        -ms-flex: 1;
+        -o-flex: 1;
+        flex: 1;
+    }
+    </style>
+</head>
+
+<body class="flex-body">
+    <nav class="teal accent-4">
+        <div class="nav-wrapper">
+            <ul class="left">
+                <li><a href="square.html">广场</a></li>
+            </ul>
+            <ul class="brand-logo center">
+                <li><a href="">8 x 8</a></li>
+            </ul>
+            <ul class="right">
+                <li><a href="login.html">登录</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container center">
+        <h4>注册</h4>
+        <form class="col s12">
+            <div class="row center">
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">perm_identity</i>
+                    <!-- 匹配2-6个中文：pattern = '^[\u4E00-\u9FFF]{2,6}$' -->
+                    <input type="text" pattern='^[\u4E00-\u9FFF]{2,6}$' class="validate">
+                    <label>姓名</label>
+                </div>
+                <div class="input-field col s8">
+                    <i class="material-icons prefix">view_list</i>
+                    <input type="text" pattern='^[\u4E00-\u9FFF]+' class="validate">
+                    <label>专业</label>
+                </div>
+                <div class="input-field col s4">
+                    <!-- 匹配年份1900-2099 pattern = '^(19|20)(\d){2}$' -->
+                    <input type="text" pattern='^(19|20)(\d){2}$' class="validate">
+                    <label>年份</label>
+                </div>
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">email</i>
+                    <input type="email" pattern='(\w|\d)+@(\w|\d)+\.([a-z]+)' class="validate">
+                    <label>邮箱</label>
+                </div>
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">lock</i>
+                    <input type="password" pattern="[\w]{8,15}" class="validate">
+                    <label>密码</label>
+                </div>
+                <div class="input-field col s12">
+                    <i class="material-icons prefix">lock</i>
+                    <input type="password" pattern="[\w]{8,15}" class="validate">
+                    <label>确认密码</label>
+                </div>
+                <button class="btn waves-effect waves-light" type="submit" name="action">注册
+                    <i class="material-icons right">send</i>
+                </button>
+            </div>
+        </form>
+    </div>
+    <footer class="page-footer teal accent-4" style="padding-top: 0;">
+        <div class="footer-copyright">
+            <div class="container">
+                Made by <a class="orange-text text-lighten-3" href="http://chengkang.pw">chengkang</a>
+            </div>
+        </div>
+    </footer>
+    <!--  Scripts-->
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="lib/materialize.min.js"></script>
+</body>
+
+</html>
