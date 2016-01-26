@@ -3,7 +3,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
-  <title>8 x 8 - 广场</title>
+  <title>8 x 8 - 系统通知</title>
 
   <!-- CSS  -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -11,11 +11,8 @@
   <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
 
   <style type="text/css">
-  .btn-floating>i.thumb_up{
-    color: #12c5a2;
-  }
-  .btn-floating>i.person_pin{
-    color: #12c5a2;
+  .input-field>i.prefix{
+    color: #646464;
   }
   </style>
 </head>
@@ -30,7 +27,7 @@
                   <li><a href="/profile">自己</a></li>
               </ul>
               <ul id="nav-mobile" class="right">
-                  <li class="active"><a href="/world">广场</a></li>
+                  <li><a href="/world">广场</a></li>
               </ul>
           </div>
           </div>
@@ -43,42 +40,64 @@
         <i class="large material-icons">dashboard</i>
       </a>
       <ul>
-        <li><a class="btn-floating red"><i class="material-icons">search</i></a></li>
+        <!-- 未登录菜单 -->
+        <li><a class="btn-floating teal accent-4"><span style="font-weight: 300;font-size:0.8em;">注册</span><i class="material-icons">play_for_work</i></a></li>
+        <li><a class="btn-floating teal accent-4"><span style="font-weight: 300;font-size:0.8em;">登录</span><i class="material-icons">power_settings_new</i></a></li>
+        <!-- 登录后菜单 -->
+        <!-- <li><a class="btn-floating red"><i class="material-icons">search</i></a></li>
         <li><a class="btn-floating yellow darken-1"><i class="material-icons">info</i></a></li>
         <li><a class="btn-floating blue"><i class="material-icons">textsms</i></a></li>
-        <li><a class="btn-floating green"><i class="material-icons">contacts</i></a></li>
+        <li><a class="btn-floating green"><i class="material-icons">contacts</i></a></li> -->
       </ul>
     </div>
 
 
     <div class="section">
-      <h5 style="color: #7f7f7f;font-weight: 300;">这里是 8x8 广场。</h5>
+      <h5 style="color: #7f7f7f;font-weight: 300;">这里是 8x8 系统通知。</h5>
       <small style="color: #7f7f7f;font-weight: 300;">
-        8x8广场 会展示校友动态。<br>
-        你可以发布自己的动态，向大家问好。<br>
-        点击头像，进入校友个人名片页面。<br>
+        8x8社区系统通知会显示在当前页面。<br>
+        请勿轻信任何其他来源的 伪官方 通知。<br>
         <br>
-        你也可以通过右下角的悬浮菜单，进行：<br>
-        搜索、查看通知、查看好友消息、查看好友列表
+        提示：<br>
+        当有新的好友申请时，可以先点击用户头像<br>
+        先看看 TA 的个人名片再做决定。<br>
+        <br>
+        以下是你的通知列表：
       </small>
     </div>
 
+
     <div class="section">
+      <h5 style="color: #7f7f7f;font-weight: 300;">好友申请</h5>
 
-      <div class="row">
-        <form class="col s12">
-          <div class="row">
-            <textarea id="icon_prefix2" class="materialize-textarea"></textarea>
-            <label for="icon_prefix2">发布动态</label>
+      <ul class="collection z-depth-2" style="text-align: left; padding-top: 10px;">
+        <li class="collection-item avatar">
+          <img src="avatar.jpg" alt="" class="circle">
+          <span class="title">程康</span>
+          <p><span style="font-weight:300;font-size: 0.8em;">2016.1.23 23:33</span> <br>
+             <span style="font-weight:300;">申请成为你的好友。</span>
+          </p>
+          </a>
+          <div class="row"></div>
+          <div class="row" style="margin-left:8%;margin-right:8%;margin-bottom: 20px;">
+            <div class="col l4 s6 left-align " style="text-align:center;font-weight: 300;">
+              <a class="waves-effect waves-light btn teal accent-4">同意</a>
+            </div>
+            <div class="col l4 hide-on-med-and-down">
+              <br>
+            </div>
+            <div class="col l4 s6 right-align " style="text-align:center;font-weight: 300;">
+              <a class="waves-effect waves-light btn teal accent-4">拒绝</a>
+            </div>
           </div>
-          <div class="row">
-            <button class="btn waves-effect waves-light" type="submit" name="action">发 送 
-                <i class="material-icons right">send</i>
-            </button>
-          </div>
-        </form>
-      </div>
+        </li>
+      </ul>
+    </div>
 
+    <div class="divider"></div>
+
+    <div class="section">
+      <h5 style="color: #7f7f7f;font-weight: 300;">系统通知</h5>
       <ul class="collection" style="text-align: left;">
         <li class="collection-item avatar">
           <img src="avatar.jpg" alt="" class="circle">

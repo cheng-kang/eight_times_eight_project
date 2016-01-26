@@ -43,7 +43,7 @@
     <div class="section">
 
       <!--   Avatar Section   -->
-      <div class="row">
+      <div class="row" id="info_section_start">
         <div class="col s6 offset-s3">
           <img class="circle responsive-img" src="./avatar.jpg">
         </div>
@@ -52,11 +52,11 @@
         <h5 class="realname" style="font-weight: 300;">程康</h5>
       </div>
       <div class="row" style="margin-top:-15px;">
-        <span style="font-weight: 300;">男 | 21岁</span>
+        <span style="font-weight: 300;">2012级 | 计算机科学与技术 | 男</span>
       </div>
       <div class="row">
         <div class="col s8 offset-s2">
-          <a class="waves-effect waves-light btn"><i class="material-icons left">mode_edit</i>修改基本信息</a>
+          <a class="waves-effect waves-light btn collection-item modal-trigger" href="#modal-info"><i class="material-icons left">mode_edit</i>修改基本信息</a>
           <table class="highlight centered" style="font-weight:300;">
             <tbody>
               <tr>
@@ -85,12 +85,12 @@
     <div class="divider"></div>
     
     <div id="expandable" class="section scrollspy">
-      <div class="row">
+      <div class="row" id="work">
         <div class="col s12 m3"><h5 class="light">工作经历</h5></div>
         <div class="col s12 m9">
           <ul class="collapsible" data-collapsible="expandable">
             <li class="">
-              <div class="collapsible-header"><a href="#"><i class="material-icons small" style="color: #00bfa5;">mode_edit</i></a>JAVA开发工程师</div>
+              <div class="collapsible-header"><a class="collection-item modal-trigger" href="#modal-work_1"><i class="material-icons small" style="color: #00bfa5;">mode_edit</i></a>JAVA开发工程师</div>
               <div class="collapsible-body" style="text-align:left;padding: 20px 30px 20px 30px;">
                 <small>
                 2015.1 - 至今<br>
@@ -101,7 +101,7 @@
               </div>
             </li>
             <li class="">
-              <div class="collapsible-header"><a href="#"><i class="material-icons small" style="color: #00bfa5;">mode_edit</i></a>PHP实习工程师</div>
+              <div class="collapsible-header"><a class="collection-item modal-trigger" href="#modal-work_2"><i class="material-icons small" style="color: #00bfa5;">mode_edit</i></a>PHP实习工程师</div>
               <div class="collapsible-body" style="text-align:left;padding: 20px 30px 20px 30px;">
                 <small>
                 2014.5 - 2014.8<br>
@@ -113,7 +113,7 @@
             </li>
           </ul>
 
-          <a class="btn-floating waves-effect waves-light "><i class="material-icons small">add</i></a>
+          <a class="btn-floating waves-effect waves-light collection-item modal-trigger" href="#modal-work_add"><i class="material-icons small">add</i></a>
         </div>
       </div>
     </div>
@@ -121,12 +121,12 @@
     <div class="divider"></div>
     
     <div id="expandable" class="section scrollspy">
-      <div class="row">
+      <div class="row" id="proj">
         <div class="col s12 m3"><h5 class="light">项目经历</h5></div>
         <div class="col s12 m9">
           <ul class="collapsible" data-collapsible="expandable">
             <li class="">
-              <div class="collapsible-header"><a href="#"><i class="material-icons small" style="color: #00bfa5;">mode_edit</i></a>8x8.suosi.org</div>
+              <div class="collapsible-header"><a class="collection-item modal-trigger" href="#modal-proj_1"><i class="material-icons small" style="color: #00bfa5;">mode_edit</i></a>8x8.suosi.org</div>
               <div class="collapsible-body" style="text-align:left;padding: 20px 30px 20px 30px;">
                 <small>
                 8x8社区是北科校友互荐招聘平台。<br>
@@ -137,7 +137,7 @@
             </li>
           </ul>
 
-          <a class="btn-floating waves-effect waves-light "><i class="material-icons small">add</i></a>
+          <a class="btn-floating waves-effect waves-light collection-item modal-trigger" href="#modal-proj_add"><i class="material-icons small">add</i></a>
         </div>
       </div>
     </div>
@@ -145,12 +145,12 @@
     <div class="divider"></div>
     
     <div id="expandable" class="section scrollspy">
-      <div class="row">
+      <div class="row" id="edu">
         <div class="col s12 m3"><h5 class="light">教育经历</h5></div>
         <div class="col s12 m9">
           <ul class="collapsible" data-collapsible="expandable">
             <li class="">
-              <div class="collapsible-header"><a href="#"><i class="material-icons small" style="color: #00bfa5;">mode_edit</i></a>北京科技大学</div>
+              <div class="collapsible-header"><a class="collection-item modal-trigger" href="#modal-edu_1"><i class="material-icons small" style="color: #00bfa5;">mode_edit</i></a>北京科技大学</div>
               <div class="collapsible-body" style="padding-top: 10px;padding-bottom: 10px;">
                 <small>
                 2012.9 - 至今<br>
@@ -160,7 +160,7 @@
               </div>
             </li>
             <li class="">
-              <div class="collapsible-header"><a href="#"><i class="material-icons small" style="color: #00bfa5;">mode_edit</i></a>University of Dundee</div>
+              <div class="collapsible-header"><a class="collection-item modal-trigger" href="#modal-edu_2"><i class="material-icons small" style="color: #00bfa5;">mode_edit</i></a>University of Dundee</div>
               <div class="collapsible-body" style="padding-top: 10px;padding-bottom: 10px;">
                 <small>
                 2015.9 - 至今<br>
@@ -170,7 +170,8 @@
               </div>
             </li>
           </ul>
-          <a class="btn-floating waves-effect waves-light "><i class="material-icons small">add</i></a>
+
+          <a class="btn-floating waves-effect waves-light collection-item modal-trigger" href="#modal-edu_add"><i class="material-icons small">add</i></a>
         </div>
       </div>
     </div>
@@ -178,19 +179,319 @@
     <div class="divider"></div>
 
     <div class="section">
-      <div class="row">
-        <a class="waves-effect waves-light btn">修改密码</a>
+      <div class="row" id="password">
+        <a class="waves-effect waves-light btn collection-item modal-trigger" href="#modal-password">修改密码</a>
       </div>
       <div class="row">
         <a class="waves-effect waves-teal btn-flat">注销</a>
       </div>
     </div>
+
+    <div id="modal-info" class="modal modal-fixed-footer">
+        <div class="modal-content">
+          <div class="container">
+            <h5 style="color: #7f7f7f;font-weight: 300;">修改基本信息</h5>
+            <div class="row">
+                <div class="input-field col s8">
+                    <input type="text" pattern="^[\u4E00-\u9FFF]{2,6}$" class="validate" value="程康">
+                    <label class="active">姓名</label>
+                </div>
+                <div class="input-field col s4">
+                  <select>
+                    <option value="n" selected="selected">男</option>
+                    <option value="v">女</option>
+                  </select>
+                  <label>性别</label>
+                </div>
+                <div class="input-field col s8">
+                    <input type="text" pattern="^[\u4E00-\u9FFF]+" class="validate" value="计算机科学与技术">
+                    <label class="active">专业</label>
+                </div>
+                <div class="input-field col s4">
+                    <input type="text" pattern="^(19|20)(\d){2}$" class="validate" value="2012">
+                    <label class="active">入学年份</label>
+                </div>
+                <div class="input-field col s12">
+                    <input type="text" class="validate" value="Chinanty">
+                    <label class="active">微信号</label>
+                </div>
+                <div class="input-field col s12">
+                    <input type="text" pattern="[\d]{11}" class="validate" value="13120307150">
+                    <label class="active">手机号</label>
+                </div>
+                <div class="input-field col s12">
+                    <input type="text" pattern="(\w|\d)+@(\w|\d)+\.([a-z]+)" class="validate" value="me@chengkang.pw">
+                    <label class="active">邮箱</label>
+                </div>
+                <div class="input-field col s12">
+                    <input type="text" class="validate" value="北京市海淀区">
+                    <label class="active">地址</label>
+                </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class=" modal-action modal-close waves-effect waves-light btn">修改</a>
+            <a href="#info_section_start" class=" modal-action modal-close waves-effect btn btn-flat black-text">取消</a>
+        </div>
+    </div>
+
+    <div id="modal-password" class="modal modal-fixed-footer">
+        <div class="modal-content">
+          <div class="container">
+            <h5 style="color: #7f7f7f;font-weight: 300;">修改密码</h5>
+            <div class="row">
+                <div class="input-field col s12">
+                    <input type="password" pattern="[\w]{8,15}" class="validate">
+                    <label class="active">原密码</label>
+                </div>
+                <div class="input-field col s12">
+                    <input type="password" pattern="[\w]{8,15}" class="validate">
+                    <label class="active">新密码</label>
+                </div>
+                <div class="input-field col s12">
+                    <input type="password" pattern="[\w]{8,15}" class="validate">
+                    <label class="active">新密码确认</label>
+                </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class=" modal-action modal-close waves-effect waves-light btn">修改</a>
+            <a href="#password" class=" modal-action modal-close waves-effect btn btn-flat black-text">取消</a>
+        </div>
+    </div>
+
+    <!-- 修改工作经历 遮罩层 -->
+    <div id="modal-work_1" class="modal modal-fixed-footer">
+        <div class="modal-content">
+          <div class="container">
+            <h5 style="color: #7f7f7f;font-weight: 300;">修改工作经历</h5>
+            <div class="row">
+              <form class="col s12" id="work_1-form">
+                  <div class="row center">
+                      <div class="input-field col s12">
+                          <input id="company" type="text" class="validate" value="北大医疗信息技术有限公司">
+                          <label for="company" data-error="wrong">公司</label>
+                      </div>
+                      <div class="input-field col s12">
+                          <input id="postion" type="text" class="validate" value="JAVA开发工程师">
+                          <label for="position" data-error="wrong">职位</label>
+                      </div>
+                      <div class="input-field col s6">
+                          <input id="start_date" type="date" class="datepicker" value="2011-01-04">
+                          <label for="start_date" data-error="wrong">入职日期</label>
+                      </div>
+                      <div class="input-field col s6">
+                          <input id="end_date" type="date" class="datepicker" value="2011-01-05">
+                          <label for="end_date" data-error="wrong">离职日期</label>
+                      </div>
+                      <div class="input-field col s12">
+                          <textarea id="desc" class="materialize-textarea">写代码。写代码。写代码。写代码。写代码。写代码。写代码。写代码。写代码。写代码。写代码。写代码。写代码。</textarea>
+                          <label for="desc" data-error="wrong">主要工作</label>
+                      </div>
+                  </div>
+              </form>
+            </div>
+          </div>  
+        </div>
+        <div class="modal-footer">
+            <a href="#work" class=" modal-action modal-close waves-effect waves-light btn">修改</a>
+            <a href="#work" class=" modal-action modal-close waves-effect btn btn-flat black-text">取消</a>
+        </div>
+    </div>
+
+    <!-- 修改项目经历 遮罩层 -->
+    <div id="modal-proj_1" class="modal modal-fixed-footer">
+        <div class="modal-content">
+          <div class="container">
+            <h5 style="color: #7f7f7f;font-weight: 300;">修改项目经历</h5>
+            <div class="row">
+              <form class="col s12" id="proj_1-form">
+                  <div class="row center">
+                      <div class="input-field col s12">
+                          <input id="project_name" type="text" class="validate" value="8x8.suosi.org">
+                          <label for="project_name" data-error="wrong">项目名称</label>
+                      </div>
+                      <div class="input-field col s12">
+                          <textarea id="project_desc" class="materialize-textarea">写代码。写代码。写代码。写代码。写代码。写代码。写代码。写代码。写代码。写代码。写代码。写代码。写代码。</textarea>
+                          <label for="project_desc" data-error="wrong">项目介绍</label>
+                      </div>
+                  </div>
+              </form>
+            </div>
+          </div>  
+        </div>
+        <div class="modal-footer">
+            <a href="#proj" class=" modal-action modal-close waves-effect waves-light btn">修改</a>
+            <a href="#proj" class=" modal-action modal-close waves-effect btn btn-flat black-text">取消</a>
+        </div>
+    </div>
+
+    <!-- 修改教育经历 遮罩层 -->
+    <div id="modal-edu_1" class="modal modal-fixed-footer">
+        <div class="modal-content">
+          <div class="container">
+            <h5 style="color: #7f7f7f;font-weight: 300;">修改教育经历</h5>
+            <div class="row">
+              <form class="col s12" id="edu_1-form">
+                  <div class="row center">
+                      <div class="input-field col s12">
+                          <input id="institute" type="text" class="validate" value="北京科技大学">
+                          <label for="institute" data-error="wrong">学校</label>
+                      </div>
+                      <div class="input-field col s12">
+                        <select id="degree">
+                          <option value="1" selected="selected">本科</option>
+                          <option value="2">研究生</option>
+                          <option value="3">博士</option>
+                          <option value="4">博士后</option>
+                        </select>
+                        <label>学历</label>
+                      </div>
+                      <div class="input-field col s12">
+                          <input id="institute" type="text" class="validate" value="计算机科学与技术">
+                          <label for="institute" data-error="wrong">专业</label>
+                      </div>
+                      <div class="input-field col s6">
+                          <input id="start_date" type="text" class="validate" value="2012.9">
+                          <label for="start_date" data-error="wrong">入学日期</label>
+                      </div>
+                      <div class="input-field col s6">
+                          <input id="end_date" type="text" class="validate" value="2016.6">
+                          <label for="end_date" data-error="wrong">毕业日期</label>
+                      </div>
+                  </div>
+              </form>
+            </div>
+          </div>  
+        </div>
+        <div class="modal-footer">
+            <a href="#edu" class=" modal-action modal-close waves-effect waves-light btn">修改</a>
+            <a href="#edu" class=" modal-action modal-close waves-effect btn btn-flat black-text">取消</a>
+        </div>
+    </div>
+
+    <!-- 新增工作经历 遮罩层 -->
+    <div id="modal-work_add" class="modal modal-fixed-footer">
+        <div class="modal-content">
+          <div class="container">
+            <h5 style="color: #7f7f7f;font-weight: 300;">新增工作经历</h5>
+            <div class="row">
+              <form class="col s12" id="work_add-form">
+                  <div class="row center">
+                      <div class="input-field col s12">
+                          <input id="company" type="text" class="validate">
+                          <label for="company" data-error="wrong">公司</label>
+                      </div>
+                      <div class="input-field col s12">
+                          <input id="postion" type="text" class="validate">
+                          <label for="position" data-error="wrong">职位</label>
+                      </div>
+                      <div class="input-field col s6">
+                          <input id="start_date" type="date" class="datepicker">
+                          <label for="start_date" data-error="wrong">入职日期</label>
+                      </div>
+                      <div class="input-field col s6">
+                          <input id="end_date" type="date" class="datepicker">
+                          <label for="end_date" data-error="wrong">离职日期</label>
+                      </div>
+                      <div class="input-field col s12">
+                          <textarea id="desc" class="materialize-textarea"></textarea>
+                          <label for="desc" data-error="wrong">主要工作</label>
+                      </div>
+                  </div>
+              </form>
+            </div>
+          </div>  
+        </div>
+        <div class="modal-footer">
+            <a href="#work" class=" modal-action modal-close waves-effect waves-light btn">新增</a>
+            <a href="#work" class=" modal-action modal-close waves-effect btn btn-flat black-text">取消</a>
+        </div>
+    </div>
+
+
+    <!-- 新增项目经历 遮罩层 -->
+    <div id="modal-proj_add" class="modal modal-fixed-footer">
+        <div class="modal-content">
+          <div class="container">
+            <h5 style="color: #7f7f7f;font-weight: 300;">新增项目经历</h5>
+            <div class="row">
+              <form class="col s12" id="proj_add-form">
+                  <div class="row center">
+                      <div class="input-field col s12">
+                          <input id="project_name" type="text" class="validate">
+                          <label for="project_name" data-error="wrong">项目名称</label>
+                      </div>
+                      <div class="input-field col s12">
+                          <textarea id="project_desc" class="materialize-textarea"></textarea>
+                          <label for="project_desc" data-error="wrong">项目介绍</label>
+                      </div>
+                  </div>
+              </form>
+            </div>
+          </div>  
+        </div>
+        <div class="modal-footer">
+            <a href="#proj" class=" modal-action modal-close waves-effect waves-light btn">新增</a>
+            <a href="#proj" class=" modal-action modal-close waves-effect btn btn-flat black-text">取消</a>
+        </div>
+    </div>
+
+    <!-- 新增教育经历 遮罩层 -->
+    <div id="modal-edu_add" class="modal modal-fixed-footer">
+        <div class="modal-content">
+          <div class="container">
+            <h5 style="color: #7f7f7f;font-weight: 300;">新增教育经历</h5>
+            <div class="row">
+              <form class="col s12" id="edu_add-form">
+                  <div class="row center">
+                      <div class="input-field col s12">
+                          <input id="institute" type="text" class="validate">
+                          <label for="institute" data-error="wrong">学校</label>
+                      </div>
+                      <div class="input-field col s12">
+                        <select>
+                          <option value="1" selected="selected">本科</option>
+                          <option value="2">研究生</option>
+                          <option value="3">博士</option>
+                          <option value="4">博士后</option>
+                        </select>
+                        <label>学历</label>
+                      </div>
+                      <div class="input-field col s12">
+                          <input id="institute" type="text" class="validate">
+                          <label for="institute" data-error="wrong">专业</label>
+                      </div>
+                      <div class="input-field col s6">
+                          <input id="start_date" type="text" class="datepicker" placeholder="如：2012.9">
+                          <label for="start_date" data-error="wrong">入学日期</label>
+                      </div>
+                      <div class="input-field col s6">
+                          <input id="end_date" type="text" class="datepicker" placeholder="如：2016.6">
+                          <label for="end_date" data-error="wrong">毕业日期</label>
+                      </div>
+                  </div>
+              </form>
+            </div>
+          </div>  
+        </div>
+        <div class="modal-footer">
+            <a href="#edu" class=" modal-action modal-close waves-effect waves-light btn">新增</a>
+            <a href="#edu" class=" modal-action modal-close waves-effect btn btn-flat black-text">取消</a>
+        </div>
+    </div>
+
   </div>
 
   <footer class="page-footer teal accent-4" style="padding-top: 0;">
     <div class="footer-copyright">
       <div class="container">
-      Made by <a class="orange-text text-lighten-3" href="http://chengkang.pw">chengkang</a>
+      Made by 
+      <a class="orange-text text-lighten-3" href="http://chengkang.pw">CHENGKANG</a>
+      、
+      <a class="orange-text text-lighten-3" href="http://MrLiao.cn">Mr.Liao</a>
       </div>
     </div>
   </footer>
@@ -203,7 +504,12 @@
     (function($){
       $(function(){
 
-        $('.button-collapse').sideNav();
+        $('.modal-trigger').leanModal();
+        $('.datepicker').pickadate({
+          selectMonths: true, // Creates a dropdown to control month
+          selectYears: 15 // Creates a dropdown of 15 years to control year
+        });
+        $('select').material_select();
 
       }); // end of document ready
     })(jQuery); // end of jQuery name space
