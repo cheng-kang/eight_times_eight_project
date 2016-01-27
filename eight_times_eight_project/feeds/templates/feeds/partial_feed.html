@@ -1,0 +1,13 @@
+{% load i18n %}
+{% load humanize %}
+
+<ul feed-id="{{ feed.pk }}" csrf="{{ csrf_token }}" class="collection" style="text-align: left;">
+    <li class="collection-item avatar">
+        <a href="/user/{{ feed.user.pk }}"> <img src="{{ feed.user.profile.get_picture }}" alt="" class="circle"></a>
+        <span class="title">{{ feed.user.profile.realname }}</span>
+        <p><span style="font-weight:300;font-size: 0.8em;">{{ feed.date|naturaltime }}</span> <br>
+         <span style="font-weight:300;">{{ feed.linkfy_post|safe }}</span>
+        </p>
+        </a>
+    </li>
+</ul>
