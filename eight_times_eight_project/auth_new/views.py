@@ -6,6 +6,10 @@ from eight_times_eight_project.auth_new.models import Profile
 from eight_times_eight_project.feeds.models import Feed
 
 def signup(request):
+    if request.user:
+        user = request.user
+    else:
+        user = None
     if request.method == 'POST':
         userForm = SignUpForm(request.POST)
         profileForm = SignUpProfileForm(request.POST)
@@ -34,4 +38,4 @@ def signup(request):
             feed.save()
             return redirect('/')
     else:
-        return render(request, 'auth_new/signup.html', {'userForm': SignUpForm(), 'profileForm': SignUpProfileForm()})
+        return render(request, 'auth_new/signup.html', {'userForm': SignUpForm(), 'profileForm': SignUpProfileForm(), 'user': user})

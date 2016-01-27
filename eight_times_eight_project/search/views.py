@@ -3,35 +3,33 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 from eight_times_eight_project.feeds.models import Feed
 from django.contrib.auth.decorators import login_required
+from eight_times_eight_project.auth_new.models import Profile
 
 @login_required
 def search(request):
+
+    if request.user:
+        user = request.user
+    else:
+        user = None
+
     if 'q' in request.GET:
         querystring = request.GET.get('q').strip()
         if len(querystring) == 0:
             return redirect('/search/')
-        try:
-            search_type = request.GET.get('type')
-            if search_type not in ['feed', 'users']:
-                search_type = 'feed'
-        except Exception, e:
-            search_type = 'feed'
         
-        count = {}
-        results = {}
+        count = 0
 
-        results['feed'] = Feed.objects.filter(post__icontains=querystring, parent=None)
-        results['users'] = User.objects.filter(Q(username__icontains=querystring) | Q(first_name__icontains=querystring) | Q(last_name__icontains=querystring))
-        
-        count['feed'] = results['feed'].count()
-        count['users'] = results['users'].count()
+        results = Profile.objects.filter(Q(realname__icontains=querystring) | Q(major__icontains=querystring) | Q(enter_year__icontains=querystring))
 
-        return render(request, 'search/results.html', {
+        count = results.count()
+
+        return render(request, 'search/search.html', {
             'hide_search': True,
             'querystring': querystring,
-            'active': search_type,
             'count': count,
-            'results': results[search_type],
+            'results': results,
+            'user': user,
         })
     else:
-        return render(request, 'search/search.html', {'hide_search': True})
+        return render(request, 'search/search.html', {'hide_search': True, 'querystring': "", 'count': 0, 'user': user })
