@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.html import escape
@@ -6,18 +7,23 @@ class Activity(models.Model):
     FAVORITE = 'F'
     LIKE = 'L'
     VOTE = 'V'
+    ADD_FRIEND = 'A'
+    CONFIRM_FRIEND = 'C'
+    PROFILE_VIEW = 'P'
     ACTIVITY_TYPES = (
         (FAVORITE, 'Favorite'),
         (LIKE, 'Like'),
         (VOTE, 'Vote'),
+        (ADD_FRIEND, 'Add Friend'),
+        (CONFIRM_FRIEND, 'Confirm Friend Request'),
+        (PROFILE_VIEW, 'View User Profile'),
         )
 
     user = models.ForeignKey(User)
     activity_type = models.CharField(max_length=1, choices=ACTIVITY_TYPES)
     date = models.DateTimeField(auto_now_add=True)
     feed = models.IntegerField(null=True, blank=True)
-    question = models.IntegerField(null=True, blank=True)
-    answer = models.IntegerField(null=True, blank=True)
+    to_user = models.IntegerField(null=True, blank=True)
 
     class Meta:
         verbose_name = 'Activity'
@@ -36,26 +42,29 @@ class Activity(models.Model):
 #            user.save()
 
 class Notification(models.Model):
-    LIKED = 'L'
-    COMMENTED = 'C'
     FAVORITED = 'F'
-    EDITED_ARTICLE = 'E'
-    ALSO_COMMENTED = 'S'
+    LIKED = 'L'
+    VOTED = 'V'
+    # COMMENTED = 'C'
+    ADDED_FRIEND = 'A'
+    CONFIRMED_FRIEND = 'C'
+    PROFILEED_VIEWED = 'P'
     NOTIFICATION_TYPES = (
+        (FAVORITED, 'Favorite'),
         (LIKED, 'Liked'),
-        (COMMENTED, 'Commented'),
-        (FAVORITED, 'Favorited'),
-        (EDITED_ARTICLE, 'Edited Article'),
-        (ALSO_COMMENTED, 'Also Commented'),
+        (VOTED, 'Voted'),
+        # (COMMENTED, 'Commented'),
+        (ADDED_FRIEND, 'Add Friend'),
+        (CONFIRMED_FRIEND, 'Confirm Friend Request'),
+        (PROFILEED_VIEWED, 'Viewed user profile'),
         )
 
-    _LIKED_TEMPLATE = u'<a href="/{0}/">{1}</a> liked your post: <a href="/feeds/{2}/">{3}</a>'
-    _COMMENTED_TEMPLATE = u'<a href="/{0}/">{1}</a> commented on your post: <a href="/feeds/{2}/">{3}</a>'
-    _FAVORITED_TEMPLATE = u'<a href="/{0}/">{1}</a> favorited your question: <a href="/questions/{2}/">{3}</a>'
-    _ANSWERED_TEMPLATE = u'<a href="/{0}/">{1}</a> answered your question: <a href="/questions/{2}/">{3}</a>'
-    _ACCEPTED_ANSWER_TEMPLATE = u'<a href="/{0}/">{1}</a> accepted your answer: <a href="/questions/{2}/">{3}</a>'
-    _EDITED_ARTICLE_TEMPLATE = u'<a href="/{0}/">{1}</a> edited your article: <a href="/article/{2}/">{3}</a>'
-    _ALSO_COMMENTED_TEMPLATE = u'<a href="/{0}/">{1}</a> also commentend on the post: <a href="/feeds/{2}/">{3}</a>'
+    _LIKED_TEMPLATE = u'<a href="/user/{0}/">{1}</a> 点赞了: <a href="/feeds/{2}/">{3}</a>'
+    _VOTED_TEMPLATE = u'<a href="/user/{0}/">{1}</a> 推荐了你!'
+    _ADDED_FRIEND_TEMPLATE = u'<a href="/user/{0}/">{1}</a> 请求添加你为好友!'
+    _CONFIRMED_FRIEND_TEMPLATE = u'<a href="/user/{0}/">{1}</a> 和你成为了好友!'
+    _PROFILEED_VIEWED_TEMPLATE = u'<a href="/user/{0}/">{1}</a> 查看了你的名片!'
+    # _COMMENTED_TEMPLATE = u'<a href="/{0}/">{1}</a> 评论了: <a href="/feeds/{2}/">{3}</a>'
 
     from_user = models.ForeignKey(User, related_name='+')
     to_user = models.ForeignKey(User, related_name='+')
@@ -72,18 +81,18 @@ class Notification(models.Model):
     def __unicode__(self):
         if self.notification_type == self.LIKED:
             return self._LIKED_TEMPLATE.format(
-                escape(self.from_user.username),
-                escape(self.from_user.profile.get_screen_name()),
+                escape(self.from_user.pk),
+                escape(self.from_user.profile.realname),
                 self.feed.pk,
                 escape(self.get_summary(self.feed.post))
                 )
-        elif self.notification_type == self.COMMENTED:
-            return self._COMMENTED_TEMPLATE.format(
-                escape(self.from_user.username),
-                escape(self.from_user.profile.get_screen_name()),
-                self.feed.pk,
-                escape(self.get_summary(self.feed.post))
-                )
+        # elif self.notification_type == self.COMMENTED:
+        #     return self._COMMENTED_TEMPLATE.format(
+        #         escape(self.from_user.username),
+        #         escape(self.from_user.profile.get_screen_name()),
+        #         self.feed.pk,
+        #         escape(self.get_summary(self.feed.post))
+        #         )
         elif self.notification_type == self.FAVORITED:
             return self._FAVORITED_TEMPLATE.format(
                 escape(self.from_user.username),
@@ -91,12 +100,25 @@ class Notification(models.Model):
                 self.question.pk,
                 escape(self.get_summary(self.question.title))
                 )
-        elif self.notification_type == self.ALSO_COMMENTED:
-            return self._ALSO_COMMENTED_TEMPLATE.format(
-                escape(self.from_user.username),
-                escape(self.from_user.profile.get_screen_name()),
-                self.feed.pk,
-                escape(self.get_summary(self.feed.post))
+        elif self.notification_type == self.VOTED:
+            return self._VOTED_TEMPLATE.format(
+                escape(self.from_user.pk),
+                escape(self.from_user.profile.realname),
+                )
+        elif self.notification_type == self.ADDED_FRIEND:
+            return self._ADDED_FRIEND_TEMPLATE.format(
+                escape(self.from_user.pk),
+                escape(self.from_user.profile.realname),
+                )
+        elif self.notification_type == self.CONFIRMED_FRIEND:
+            return self._CONFIRMED_FRIEND_TEMPLATE.format(
+                escape(self.from_user.pk),
+                escape(self.from_user.profile.realname),
+                )
+        elif self.notification_type == self.PROFILE_VIEWED:
+            return self._PROFILE_VIEWED_TEMPLATE.format(
+                escape(self.from_user.pk),
+                escape(self.from_user.profile.realname),
                 )
         else:
             return 'Ooops! Something went wrong.'

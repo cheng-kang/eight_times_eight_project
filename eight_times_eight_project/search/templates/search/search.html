@@ -70,7 +70,7 @@
         {% for item in results %}
 		<div class="card">
 			<div class="row" style="padding-top:50px;padding-bottom:0">
-				<a href="#"><img class="circle responsive-img" src="{{ item.get_picture }}" style="height:100px"></a>
+				<a href="/user/{{ item.user.pk }}"><img class="circle responsive-img" src="{{ item.get_picture }}" style="height:100px"></a>
 			</div>
 			<div class="row" style="font-weight:300;margin-left:16%;margin-right:16%;margin-bottom:20px;border-bottom:1px #c3c3c3 solid">
 				<span style="font-size:27px">{{ item.realname }}</span><br>
