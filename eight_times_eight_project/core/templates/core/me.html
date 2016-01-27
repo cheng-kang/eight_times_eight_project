@@ -3,18 +3,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
-  <title>8 x 8 - 自己</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+    <title>8 x 8 - 自己</title>
 
-  <!-- CSS  -->
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
-  <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <!-- CSS  -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
 
-  <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
-  <link href="{% static 'css/jquery.Jcrop.min.css' %}" rel="stylesheet">
-  <script src="{% static 'js/jquery.Jcrop.min.js' %}"></script>
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
+    <script src="http://jcrop-cdn.tapmodo.com/v2.0.0-RC1/js/Jcrop.js"></script>
+    <link rel="stylesheet" href="http://jcrop-cdn.tapmodo.com/v2.0.0-RC1/css/Jcrop.css" type="text/css">
+
+    <style type="text/css">
+        .jcrop-selection>button{
+            background-color: transparent;
+        }
+    </style>
 </head>
 <body>
   <div class="navbar-fixed">
@@ -49,55 +55,26 @@
     <div class="section">
 
       <!--   Avatar Section   -->
-      <div class="row" id="info_section_start">
+        <div class="row" id="info_section_start">
         <div class="col s6 offset-s3">
           <img class="circle responsive-img" src="{{ user.profile.get_picture }}">
         </div>
-
-      <form enctype="multipart/form-data" method="post" action="{% url 'upload_picture' %}" id="picture-upload-form">
-        {% csrf_token %}
-        <input type="file" name="picture" style="display: none">
-        <button type="button" class="btn btn-default" id="btn-upload-picture">{% trans 'Upload new picture' %}</button>
-      </form>
-
-      {% if uploaded_picture %}
-        <form method="post" action="{% url 'save_uploaded_picture' %}">
-          {% csrf_token %}
-          <div class="modal fade" id="modal-upload-picture">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                  <h4 class="modal-title">{% trans 'Crop Picture' %}</h4>
-                </div>
-                <div class="modal-body">
-                  <div class="selected-picture">
-                    <p>{% trans 'Crop the profile picture and then click on the' %} <strong>{% trans 'Save Picture' %}</strong> {% trans 'button' %}</p>
-                    <img src="{{ MEDIA_URL }}profile_pictures/{{ user.username }}_tmp.jpg?_={% now 'U' %}" id="crop-picture">
-                    <input type="hidden" id="x" name="x" />
-                    <input type="hidden" id="y" name="y" />
-                    <input type="hidden" id="w" name="w" />
-                    <input type="hidden" id="h" name="h" />
-                  </div>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Close' %}</button>
-                  <button type="submit" class="btn btn-primary">{% trans 'Save changes' %}</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </form>
-      {% endif %}
-
-      </div>
-      <div class="row" style="border-bottom: 1px solid #ccc;">
+        <a class="waves-effect waves-light btn crop-modal-trigger" id="a_for_crop_modal" href="#crop_modal" style="display: none;">Crop Modal</a>
+        </div>
+        <div class="row">
+            <form enctype="multipart/form-data" method="post" action="{% url 'upload_picture' %}" id="picture-upload-form">
+                {% csrf_token %}
+                <input type="file" name="picture" style="display: none">
+                <button type="button" class="btn btn-default block" id="btn-upload-picture">修改头像</button>
+            </form>
+        </div>
+        <div class="row" style="border-bottom: 1px solid #ccc;">
         <h5 class="realname" style="font-weight: 300;">{{ user.profile.realname }}</h5>
-      </div>
-      <div class="row" style="margin-top:-15px;">
+        </div>
+        <div class="row" style="margin-top:-15px;">
         <span style="font-weight: 300;">{{ user.profile.enter_year }}级 | {{ user.profile.major }}<span style="display:none;"> | 男</span>
-      </div>
-      <div class="row">
+        </div>
+        <div class="row">
         <div class="col s8 offset-s2">
           <a class="waves-effect waves-light btn collection-item modal-trigger" href="#modal-info"><i class="material-icons left">mode_edit</i>修改基本信息</a>
           <table class="highlight centered" style="font-weight:300;">
@@ -131,7 +108,7 @@
             </tbody>
           </table>
         </div>
-      </div>
+        </div>
 
     </div>
 
@@ -545,6 +522,29 @@
         </div>
     </div>
 
+    <!-- 头像剪裁 遮罩层 -->
+  {% if uploaded_picture %}
+      <!-- Modal Structure -->
+      <div id="crop_modal" class="modal modal-fixed-footer">
+
+        <form method="post" action="{% url 'save_uploaded_picture' %}">
+
+        <div class="modal-content">
+            <div id="interface" class="page-interface">
+                <img src="{{ MEDIA_URL }}profile_pictures/{{ user.username }}_tmp.jpg?_={% now 'U' %}" id="target" />
+            </div>
+            {% csrf_token %}
+            <input type="hidden" name="x" id="cropx" value="0" />
+            <input type="hidden" name="y" id="cropy" value="0" />
+            <input type="hidden" name="w" id="cropw" value="0" />
+            <input type="hidden" name="h" id="croph" value="0" />
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class=" modal-action waves-effect waves-green btn">裁剪完毕</>
+        </div>
+        </form>
+      </div>
+  {% endif %}
   </div>
 
   <footer class="page-footer teal accent-4" style="padding-top: 0;">
@@ -560,7 +560,6 @@
 
 
   <!--  Scripts-->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
   <script type="text/javascript">
         $(function () {
 
@@ -571,29 +570,45 @@
           });
           $('select').material_select();
 
-          var jcrop_api,
-              boundx,
-              boundy,
-              xsize = 200,
-              ysize = 200;
 
-          $("#crop-picture").Jcrop({
-            aspectRatio: xsize / ysize,
-            onSelect: updateCoords,
-            setSelect: [0, 0, 200, 200]
-          },function(){
-            var bounds = this.getBounds();
-            boundx = bounds[0];
-            boundy = bounds[1];
-            jcrop_api = this;
-          });
+        $('#target').Jcrop();
+        $('#target').Jcrop({
+            setSelect: [ 0,0,200,200 ],
+            aspectRatio: 1,
+            bgColor: 'white'
+        });
 
-          function updateCoords(c) {
-            $("#x").val(c.x);
-            $("#y").val(c.y);
-            $("#w").val(c.w);
-            $("#h").val(c.h);
-          };
+
+        $('#interface').on('cropmove cropend',function(e,s,c){
+            console.log(e,s,c);
+          $('#cropx').val(c.x);
+          $('#cropy').val(c.y);
+          $('#cropw').val(c.w);
+          $('#croph').val(c.h);
+        });
+{#          var jcrop_api,#}
+{#              boundx,#}
+{#              boundy,#}
+{#              xsize = 200,#}
+{#              ysize = 200;#}
+{##}
+{#          $("#crop-picture").Jcrop({#}
+{#            aspectRatio: xsize / ysize,#}
+{#            onSelect: updateCoords,#}
+{#            setSelect: [0, 0, 200, 200]#}
+{#          },function(){#}
+{#            var bounds = this.getBounds();#}
+{#            boundx = bounds[0];#}
+{#            boundy = bounds[1];#}
+{#            jcrop_api = this;#}
+{#          });#}
+{##}
+{#          function updateCoords(c) {#}
+{#            $("#x").val(c.x);#}
+{#            $("#y").val(c.y);#}
+{#            $("#w").val(c.w);#}
+{#            $("#h").val(c.h);#}
+{#          };#}
 
           $("#btn-upload-picture").click(function () {
             $("#picture-upload-form input[name='picture']").click();
@@ -602,10 +617,14 @@
           $("#picture-upload-form input[name='picture']").change(function () {
             $("#picture-upload-form").submit();
           });
-
         {% if uploaded_picture %}
-          $("#modal-upload-picture").modal();
-          window.history.pushState("", "", "/me/picture/");
+            $('.crop-modal-trigger').leanModal({
+                  dismissible: false, // Modal can be dismissed by clicking outside of the modal
+                }
+              );
+            $("#crop_modal").openModal();
+{#          $("#modal-upload-picture").modal();#}
+          window.history.pushState("", "", "/me/");
         {% endif %}
 
         });
