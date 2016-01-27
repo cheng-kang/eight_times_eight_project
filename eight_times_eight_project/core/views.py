@@ -148,4 +148,4 @@ def save_uploaded_picture(request):
         os.remove(tmp_filename)
     except Exception, e:
         pass
-    return redirect('/settings/picture/')
+    return redirect('/me/')
