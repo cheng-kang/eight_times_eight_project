@@ -47,10 +47,17 @@ def profile(request, id):
 def me(request):
     user = request.user
 
+    uploaded_picture = False
+    try:
+        if request.GET.get('upload_picture') == 'uploaded':
+            uploaded_picture = True
+    except Exception, e:
+        pass
+
     profile_form = ProfileForm(instance=user)
     change_password_form = ChangePasswordForm(instance=user)
 
-    return render(request, 'core/me.html', {'user':user, 'profile_form':profile_form, 'change_password_form':change_password_form})
+    return render(request, 'core/me.html', {'user':user, 'profile_form':profile_form, 'change_password_form':change_password_form, 'uploaded_picture': uploaded_picture})
 
 @login_required
 def update_profile(request):
@@ -121,9 +128,9 @@ def upload_picture(request):
             new_size = new_width, new_height
             im.thumbnail(new_size, Image.ANTIALIAS)
             im.save(filename)
-        return redirect('/settings/picture/?upload_picture=uploaded')
+        return redirect('/me/?upload_picture=uploaded')
     except Exception, e:
-        return redirect('/settings/picture/')
+        return redirect('/me/')
 
 @login_required
 def save_uploaded_picture(request):

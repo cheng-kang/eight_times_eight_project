@@ -1,3 +1,5 @@
+{% load staticfiles %}
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,6 +11,11 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
   <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+
+  <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+  <link href="{% static 'css/jquery.Jcrop.min.css' %}" rel="stylesheet">
+  <script src="{% static 'js/jquery.Jcrop.min.js' %}"></script>
+  <script src="{% static 'js/picture.js' %}"></script>
 </head>
 <body>
   <div class="navbar-fixed">
@@ -47,6 +54,43 @@
         <div class="col s6 offset-s3">
           <img class="circle responsive-img" src="{{ user.profile.get_picture }}">
         </div>
+
+      <form enctype="multipart/form-data" method="post" action="{% url 'upload_picture' %}" id="picture-upload-form">
+        {% csrf_token %}
+        <input type="file" name="picture" style="display: none">
+        <button type="button" class="btn btn-default" id="btn-upload-picture">{% trans 'Upload new picture' %}</button>
+      </form>
+
+      {% if uploaded_picture %}
+        <form method="post" action="{% url 'save_uploaded_picture' %}">
+          {% csrf_token %}
+          <div class="modal fade" id="modal-upload-picture">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                  <h4 class="modal-title">{% trans 'Crop Picture' %}</h4>
+                </div>
+                <div class="modal-body">
+                  <div class="selected-picture">
+                    <p>{% trans 'Crop the profile picture and then click on the' %} <strong>{% trans 'Save Picture' %}</strong> {% trans 'button' %}</p>
+                    <img src="{{ MEDIA_URL }}profile_pictures/{{ user.username }}_tmp.jpg?_={% now 'U' %}" id="crop-picture">
+                    <input type="hidden" id="x" name="x" />
+                    <input type="hidden" id="y" name="y" />
+                    <input type="hidden" id="w" name="w" />
+                    <input type="hidden" id="h" name="h" />
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Close' %}</button>
+                  <button type="submit" class="btn btn-primary">{% trans 'Save changes' %}</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      {% endif %}
+
       </div>
       <div class="row" style="border-bottom: 1px solid #ccc;">
         <h5 class="realname" style="font-weight: 300;">{{ user.profile.realname }}</h5>
@@ -517,21 +561,55 @@
 
 
   <!--  Scripts-->
-  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
   <script type="text/javascript">
-    (function($){
-      $(function(){
+        $(function () {
 
-        $('.modal-trigger').leanModal();
-        $('.datepicker').pickadate({
-          selectMonths: true, // Creates a dropdown to control month
-          selectYears: 15 // Creates a dropdown of 15 years to control year
+          $('.modal-trigger').leanModal();
+          $('.datepicker').pickadate({
+            selectMonths: true, // Creates a dropdown to control month
+            selectYears: 15 // Creates a dropdown of 15 years to control year
+          });
+          $('select').material_select();
+
+          var jcrop_api,
+              boundx,
+              boundy,
+              xsize = 200,
+              ysize = 200;
+
+          $("#crop-picture").Jcrop({
+            aspectRatio: xsize / ysize,
+            onSelect: updateCoords,
+            setSelect: [0, 0, 200, 200]
+          },function(){
+            var bounds = this.getBounds();
+            boundx = bounds[0];
+            boundy = bounds[1];
+            jcrop_api = this;
+          });
+
+          function updateCoords(c) {
+            $("#x").val(c.x);
+            $("#y").val(c.y);
+            $("#w").val(c.w);
+            $("#h").val(c.h);
+          };
+
+          $("#btn-upload-picture").click(function () {
+            $("#picture-upload-form input[name='picture']").click();
+          });
+
+          $("#picture-upload-form input[name='picture']").change(function () {
+            $("#picture-upload-form").submit();
+          });
+
+        {% if uploaded_picture %}
+          $("#modal-upload-picture").modal();
+          window.history.pushState("", "", "/me/picture/");
+        {% endif %}
+
         });
-        $('select').material_select();
-
-      }); // end of document ready
-    })(jQuery); // end of jQuery name space
 
       {% if messages %}
         {% for message in messages %}
