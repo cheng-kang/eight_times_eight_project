@@ -23,9 +23,6 @@
               <a href="{% url 'profile' user.username %}">{{ user.profile.get_screen_name }}</a>
             </div>
             <div class="panel-body">
-              {% if user.profile.job_title %}
-                <p><strong>{% trans 'Job Title' %}:</strong> {{ user.profile.job_title }}</p>
-              {% endif %}
               <p><strong>{% trans 'Username' %}: </strong> {{ user.username }}</p>
               {% if user.profile.location %}
                 <p><strong>{% trans 'Location' %}:</strong> {{ user.profile.location }}</p>

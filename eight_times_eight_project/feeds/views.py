@@ -19,7 +19,7 @@ def feeds(request):
     from_feed = -1
     if feeds:
         from_feed = feeds[0].id
-    return render(request, 'feeds/feeds.html', {
+    return render(request, 'feeds/square.html', {
         'feeds': feeds,
         'from_feed': from_feed, 
         'page': 1,
@@ -27,7 +27,7 @@ def feeds(request):
 
 def feed(request, pk):
     feed = get_object_or_404(Feed, pk=pk)
-    return render(request, 'feeds/feed.html', {'feed': feed})
+    return render(request, 'feeds/square.html', {'feed': feed})
 
 @login_required
 @ajax_required

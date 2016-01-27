@@ -1,6 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
+from eight_times_eight_project.auth_new.models import Profile
 from eight_times_eight_project.settings import ALLOWED_SIGNUP_DOMAINS
 
 def SignupDomainValidator(value):
@@ -26,7 +27,7 @@ def ForbiddenUsernamesValidator(value):
         raise ValidationError('This is a reserved word.')
 
 def InvalidUsernameValidator(value):
-    if '@' in value or '+' in value or '-' in value:
+    if '$' in value or '%' in value or '#' in value:
         raise ValidationError('Enter a valid username.')
 
 def UniqueEmailValidator(value):
@@ -38,30 +39,24 @@ def UniqueUsernameIgnoreCaseValidator(value):
         raise ValidationError('User with this Username already exists.')
 
 class SignUpForm(forms.ModelForm):
-    username = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}),
+    username = forms.CharField(widget=forms.EmailInput(attrs={'class':'validate', 'id':'username', 'pattern':'(\w|\d)+@(\w|\d)+\.([a-z]+)'}),
         max_length=30,
-        required=True,
-        help_text='Usernames may contain <strong>alphanumeric</strong>, <strong>_</strong> and <strong>.</strong> characters')
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'form-control'}))
-    confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'form-control'}), 
+        required=True,)
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'validate', 'id':'password', 'pattern':'[\w]{8,15}'}))
+    confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'validate', 'id':'confirm_password', 'pattern':'[\w]{8,15}'}),
         label="Confirm your password",
         required=True)
-    email = forms.CharField(widget=forms.EmailInput(attrs={'class':'form-control'}), 
-        required=True,
-        max_length=75)
 
     class Meta:
         model = User
         exclude = ['last_login', 'date_joined']
-        fields = ['username', 'email', 'password', 'confirm_password',]
+        fields = ['username', 'password', 'confirm_password',]
 
     def __init__(self, *args, **kwargs):
         super(SignUpForm, self).__init__(*args, **kwargs)
         self.fields['username'].validators.append(ForbiddenUsernamesValidator)
         self.fields['username'].validators.append(InvalidUsernameValidator)
         self.fields['username'].validators.append(UniqueUsernameIgnoreCaseValidator)
-        self.fields['email'].validators.append(UniqueEmailValidator)
-        self.fields['email'].validators.append(SignupDomainValidator)
 
     def clean(self):
         super(SignUpForm, self).clean()
@@ -70,3 +65,19 @@ class SignUpForm(forms.ModelForm):
         if password and password != confirm_password:
             self._errors['password'] = self.error_class(['Passwords don\'t match'])
         return self.cleaned_data
+
+
+class SignUpProfileForm(forms.ModelForm):
+    realname = forms.CharField(widget=forms.TextInput(attrs={'class':'validate', 'id':'realname', 'pattern':'^[\u4E00-\u9FFF]{2,6}$'}),
+        max_length=30,
+        required=True,)
+    major = forms.CharField(widget=forms.TextInput(attrs={'class':'validate', 'id':'major', 'pattern':'^[\u4E00-\u9FFF]+'}),
+        max_length=30,
+        required=True,)
+    enter_year = forms.CharField(widget=forms.TextInput(attrs={'class':'validate', 'id':'enter_year', 'pattern':'^(19|20)(\d){2}$'}),
+        max_length=4,
+        required=True,)
+
+    class Meta:
+        model = Profile
+        fields = ['realname', 'major', 'enter_year']

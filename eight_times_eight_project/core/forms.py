@@ -1,30 +1,39 @@
+# -*- coding: UTF-8 -*-
+
 from django import forms
 from django.contrib.auth.models import User
 
 class ProfileForm(forms.ModelForm):
     
-    first_name = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}), 
+    realname = forms.CharField(widget=forms.TextInput(attrs={}),
+        max_length=50,
+        required=True)
+    # 此处设置required=True,在template中不使用{{ form.realname }}而直接写html能否让设置生效?
+
+    gender = forms.ChoiceField(widget=forms.Select(attrs={}),
+        required=False)
+    major = forms.CharField(widget=forms.TextInput(attrs={}),
         max_length=30,
-        required=False)
-    last_name = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}), 
-        max_length=30,
-        required=False)
-    job_title = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}), 
+        required=True)
+    enter_year = forms.CharField(widget=forms.TextInput(attrs={}),
+        max_length=50,
+        required=True)
+    wechat = forms.CharField(widget=forms.TextInput(attrs={}),
         max_length=50,
         required=False)
-    email = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}),
-        max_length=75,
-        required=False)
-    url = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}), 
+    phone = forms.CharField(widget=forms.TextInput(attrs={}),
         max_length=50,
         required=False)
-    location = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}), 
+    email = forms.CharField(widget=forms.TextInput(attrs={}),
         max_length=50,
+        required=False)
+    address = forms.CharField(widget=forms.TextInput(attrs={}),
+        max_length=100,
         required=False)
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'job_title', 'email', 'url', 'location',]
+        fields = ['realname', 'gender', 'major', 'enter_year', 'wechat', 'phone', 'email', 'address',]
 
     def full_clean(self):
         'Strip whitespace automatically in all form fields'

@@ -41,8 +41,8 @@
       </a>
       <ul>
         <!-- 未登录菜单 -->
-        <li><a class="btn-floating teal accent-4" href="{% url 'signup' %}"><span style="font-weight: 300;font-size:0.8em;">注册</span><i class="material-icons">play_for_work</i></a></li>
-        <li><a class="btn-floating teal accent-4" href="{% url 'login' %}"><span style="font-weight: 300;font-size:0.8em;">登录</span><i class="material-icons">power_settings_new</i></a></li>
+        <li><a class="btn-floating blue" href="{% url 'signup' %}"><span style="font-weight: 300;font-size:0.8em;">注册</span><i class="material-icons">play_for_work</i></a></li>
+        <li><a class="btn-floating green" href="{% url 'signin' %}"><span style="font-weight: 300;font-size:0.8em;">登录</span><i class="material-icons">power_settings_new</i></a></li>
       </ul>
     </div>
 
@@ -60,19 +60,19 @@
     </div>
 
     <div class="section">
-
+        {% if form.errors %}<small style="color: #F44336;">{{ form.errors.as_text }}</small>{% endif %}
       <div class="row">
-        <form class="col s12" method="post" action="{% url 'login' %}">
+        <form class="col s12" method="post" action="{% url 'signin' %}">
             {% csrf_token %}
             <div class="row center">
                 <div class="input-field col l7 offset-l2 s9 offset-s1">
                     <i class="material-icons prefix email">email</i>
-                    <input id="email" type="email" pattern='(\w|\d)+@(\w|\d)+\.([a-z]+)' class="validate">
+                    <input name="username" id="email" type="email" pattern='(\w|\d)+@(\w|\d)+\.([a-z]+)' class="validate">
                     <label for="email" data-error="wrong">邮箱</label>
                 </div>
                 <div class="input-field col l7 offset-l2 s9 offset-s1">
                     <i class="material-icons prefix visibility">visibility</i>
-                    <input id="password" type="password" pattern="[\w]{8,15}" class="validate">
+                    <input name="password" id="password" type="password" pattern="[\w]{8,15}" class="validate">
                     <label for="password" data-error="wrong">密码</label>
                 </div>
                 <div class="col s12">

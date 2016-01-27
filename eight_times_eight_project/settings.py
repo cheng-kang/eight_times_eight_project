@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
 
     'eight_times_eight_project.activities',
     'eight_times_eight_project.auth_new',
@@ -45,6 +46,7 @@ INSTALLED_APPS = (
     'eight_times_eight_project.feeds',
     'eight_times_eight_project.messages_new',
     'eight_times_eight_project.search',
+
 )
 
 MIDDLEWARE_CLASSES = (
@@ -111,7 +113,7 @@ TEMPLATE_DIRS = (
 )
 
 LOGIN_URL = '/'
-LOGIN_REDIRECT_URL = '/feeds/'
+LOGIN_REDIRECT_URL = '/me/'
 
 ALLOWED_SIGNUP_DOMAINS = ['*']
 

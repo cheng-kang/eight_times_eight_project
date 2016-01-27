@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.db import models
@@ -7,12 +8,40 @@ from eight_times_eight_project.activities.models import Notification
 import urllib, hashlib
 
 class Profile(models.Model):
+
+    GENDERS = (
+        ('m', "男"),
+        ('f', "女"),
+    )
+
+    ACCOUNT_STATUS = (
+        ('n', '正常'),
+        ('b', '禁用'),
+        ('s', '停用'),
+    )
+
     user = models.OneToOneField(User)
-    location = models.CharField(max_length=50, null=True, blank=True)
-    url = models.CharField(max_length=50, null=True, blank=True)
-    job_title = models.CharField(max_length=50, null=True, blank=True)
-    #reputation = models.IntegerField(default=0)
-    #language = models.CharField(max_length=5, default='en')
+    realname = models.CharField('真实姓名', max_length=50)
+    major = models.CharField('专业', max_length=50)
+    enter_year = models.CharField('入学年份', max_length=4)
+    wechat = models.CharField('微信', max_length=50, blank=True, default="")
+    phone = models.CharField('手机号', max_length=50, blank=True, default="")
+    address = models.CharField('地址', max_length=50, blank=True, default="")
+
+    gender = models.CharField('性别', max_length=1, choices=GENDERS, default=GENDERS[0][0], blank=True)
+
+    friends = models.IntegerField('好友数', default=0, blank=True)
+    views = models.IntegerField('浏览量', default=0, blank=True)
+    votes = models.IntegerField('推荐数', default=0, blank=True)
+
+    v_email = models.SmallIntegerField("邮箱验证", default=0, blank=True)
+    v_tel = models.SmallIntegerField("手机验证", default=0, blank=True)
+    v_edu = models.SmallIntegerField("校友身份验证", default=0, blank=True)
+
+    status = models.CharField('账号状态', max_length=1, choices=ACCOUNT_STATUS, default=ACCOUNT_STATUS[0][0], blank=True)
+
+
+    personal_website = models.CharField('个人主页', max_length=50, null=True, blank=True, default="")
 
     def get_url(self):
         url = self.url
@@ -21,18 +50,14 @@ class Profile(models.Model):
         return url 
 
     def get_picture(self):
-        no_picture = 'http://tryeight_times_eight_project.vitorfs.com/static/img/user.png'
+        no_picture = settings.STATIC_URL + 'img/user.png'
         try:
             filename = settings.MEDIA_ROOT + '/profile_pictures/' + self.user.username + '.jpg'
             picture_url = settings.MEDIA_URL + 'profile_pictures/' + self.user.username + '.jpg'
             if os.path.isfile(filename):
                 return picture_url
             else:
-                gravatar_url = u'http://www.gravatar.com/avatar/{0}?{1}'.format(
-                    hashlib.md5(self.user.email.lower()).hexdigest(),
-                    urllib.urlencode({'d':no_picture, 's':'256'})
-                    )
-                return gravatar_url
+                return no_picture
         except Exception, e:
             return no_picture
 

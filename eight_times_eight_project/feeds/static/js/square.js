@@ -165,7 +165,9 @@ $(function () {
     }
   };
 
-  $("#load_feed").bind("enterviewport", load_feeds).bullseye();
+  $("#load_feed")
+      .bind("enterviewport", load_feeds)
+      .bullseye();
 
   function check_new_feeds () {
     var last_feed = $(".stream li:first-child").attr("feed-id");
@@ -201,7 +203,7 @@ $(function () {
     var feed_source = $("#feed_source").val();
     $.ajax({
       url: '/square/load_new/',
-      data: { 
+      data: {
         'last_feed': last_feed,
         'feed_source': feed_source
       },
@@ -294,3 +296,4 @@ $(function () {
   });
 
 });
+

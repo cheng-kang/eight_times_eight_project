@@ -45,36 +45,46 @@
       <!--   Avatar Section   -->
       <div class="row" id="info_section_start">
         <div class="col s6 offset-s3">
-          <img class="circle responsive-img" src="./avatar.jpg">
+          <img class="circle responsive-img" src="{{ user.profile.get_picture }}">
         </div>
       </div>
       <div class="row" style="border-bottom: 1px solid #ccc;">
-        <h5 class="realname" style="font-weight: 300;">程康</h5>
+        <h5 class="realname" style="font-weight: 300;">{{ user.profile.realname }}</h5>
       </div>
       <div class="row" style="margin-top:-15px;">
-        <span style="font-weight: 300;">2012级 | 计算机科学与技术<span style="display:none;"> | 男</span></span>
+        <span style="font-weight: 300;">{{ user.profile.enter_year }}级 | {{ user.profile.major }}<span style="display:none;"> | 男</span>
       </div>
       <div class="row">
         <div class="col s8 offset-s2">
           <a class="waves-effect waves-light btn collection-item modal-trigger" href="#modal-info"><i class="material-icons left">mode_edit</i>修改基本信息</a>
           <table class="highlight centered" style="font-weight:300;">
             <tbody>
+              {% if user.profile.wechat %}
               <tr>
                 <td>微信号</td>
-                <td>Chinanty</td>
+                <td>{{ user.profile.wechat }}</td>
               </tr>
+              {% endif %}
+              {% if user.profile.phone %}
               <tr>
                 <td>手机号</td>
-                <td>13120307150</td>
+                <td>{{ user.profile.phone }}</td>
               </tr>
+              {% endif %}
               <tr>
                 <td>邮箱</td>
-                <td>me@chengkang.pw</td>
+                {% if user.email %}
+                <td>{{ user.email }}</td>
+                {% else %}
+                <td>{{ user.username }}</td>
+                {% endif %}
               </tr>
+              {% if user.profile.address %}
               <tr>
                 <td>地址</td>
-                <td>北京市海淀区</td>
+                <td>{{ user.profile.address }}</td>
               </tr>
+              {% endif %}
             </tbody>
           </table>
         </div>
@@ -188,43 +198,46 @@
     </div>
 
     <div id="modal-info" class="modal modal-fixed-footer">
+        <form method="post" action="{% url 'update_profile' %}">
+        {% csrf_token %}
         <div class="modal-content">
           <div class="container">
             <h5 style="color: #7f7f7f;font-weight: 300;">修改基本信息</h5>
+            {% if profile_form.errors %}<small style="color: #F44336;">{{ profile_form.errors.as_text }}</small>{% endif %}
             <div class="row">
                 <div class="input-field col s8">
-                    <input type="text" pattern="^[\u4E00-\u9FFF]{2,6}$" class="validate" value="程康">
+                    <input type="text" name="realname" pattern="^[\u4E00-\u9FFF]{2,6}$" class="validate" value="{{ user.profile.realname }}">
                     <label class="active">姓名</label>
                 </div>
                 <div class="input-field col s4">
                   <select>
-                    <option value="n" selected="selected">男</option>
-                    <option value="v">女</option>
+                    <option value="m" selected="selected">男</option>
+                    <option value="f">女</option>
                   </select>
                   <label>性别</label>
                 </div>
                 <div class="input-field col s8">
-                    <input type="text" pattern="^[\u4E00-\u9FFF]+" class="validate" value="计算机科学与技术">
+                    <input type="text" name="major" pattern="^[\u4E00-\u9FFF]+" class="validate" value="{{ user.profile.major }}">
                     <label class="active">专业</label>
                 </div>
                 <div class="input-field col s4">
-                    <input type="text" pattern="^(19|20)(\d){2}$" class="validate" value="2012">
+                    <input type="text" name="enter_year" pattern="^(19|20)(\d){2}$" class="validate" value="{{ user.profile.enter_year }}">
                     <label class="active">入学年份</label>
                 </div>
                 <div class="input-field col s12">
-                    <input type="text" class="validate" value="Chinanty">
+                    <input type="text" name="wechat" class="validate" value="{{ user.profile.wechat }}">
                     <label class="active">微信号</label>
                 </div>
                 <div class="input-field col s12">
-                    <input type="text" pattern="[\d]{11}" class="validate" value="13120307150">
+                    <input type="text" name="phone" pattern="[\d]{11}" class="validate" value="{{ user.profile.phone }}">
                     <label class="active">手机号</label>
                 </div>
                 <div class="input-field col s12">
-                    <input type="text" pattern="(\w|\d)+@(\w|\d)+\.([a-z]+)" class="validate" value="me@chengkang.pw">
+                    <input type="text" name="email" pattern="(\w|\d)+@(\w|\d)+\.([a-z]+)" class="validate" value="{% if user.email %}{{ user.email }}{% else %}{{ user.username }}{% endif %}">
                     <label class="active">邮箱</label>
                 </div>
                 <div class="input-field col s12">
-                    <input type="text" class="validate" value="北京市海淀区">
+                    <input type="text" name="address" class="validate" value="{{ user.profile.address }}">
                     <label class="active">地址</label>
                 </div>
             </div>
@@ -234,34 +247,38 @@
             <button type="submit" class=" modal-action modal-close waves-effect waves-light btn">修改</button>
             <a href="#info_section_start" class=" modal-action modal-close waves-effect btn btn-flat black-text">取消</a>
         </div>
+        </form>
     </div>
 
     <div id="modal-password" class="modal modal-fixed-footer">
+        <form method="post" action="{% url 'update_password' %}">
+        {% csrf_token %}
+        {{ change_password_form.id }}
         <div class="modal-content">
           <div class="container">
             <h5 style="color: #7f7f7f;font-weight: 300;">修改密码</h5>
-
-            <small style="color: #F44336;">{{ form.errors.as_text }}</small>
+              {% if change_password_form.errors %}<small style="color: #F44336;">{{ change_password_form.errors.as_text }}</small>{% endif %}
             <div class="row">
                 <div class="input-field col s12">
-                    <input type="password" pattern="[\w]{8,15}" class="validate">
+                    <input type="password" name="old_password" pattern="[\w]{8,15}" class="validate">
                     <label class="active">原密码</label>
                 </div>
                 <div class="input-field col s12">
-                    <input type="password" pattern="[\w]{8,15}" class="validate">
+                    <input type="password" name="new_password" pattern="[\w]{8,15}" class="validate">
                     <label class="active">新密码</label>
                 </div>
                 <div class="input-field col s12">
-                    <input type="password" pattern="[\w]{8,15}" class="validate">
+                    <input type="password" name="confirm_password" pattern="[\w]{8,15}" class="validate">
                     <label class="active">新密码确认</label>
                 </div>
             </div>
           </div>
         </div>
         <div class="modal-footer">
-            <a href="#!" class=" modal-action modal-close waves-effect waves-light btn">修改</a>
+            <button type="submit" class=" modal-action modal-close waves-effect waves-light btn">修改</button>
             <a href="#password" class=" modal-action modal-close waves-effect btn btn-flat black-text">取消</a>
         </div>
+        </form>
     </div>
 
     <!-- 修改工作经历 遮罩层 -->
@@ -515,6 +532,12 @@
 
       }); // end of document ready
     })(jQuery); // end of jQuery name space
+
+      {% if messages %}
+        {% for message in messages %}
+            Materialize.toast('{{ message }}', 2000);
+        {% endfor %}
+      {% endif %}
   </script>
 
   </body>

@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 import os
 from PIL import Image
 
@@ -12,13 +14,13 @@ from eight_times_eight_project.core.forms import ProfileForm, ChangePasswordForm
 from eight_times_eight_project.feeds.models import Feed
 from eight_times_eight_project.feeds.views import FEEDS_NUM_PAGES
 from eight_times_eight_project.feeds.views import feeds
+from eight_times_eight_project.auth_new.models import Profile
 
 
 def home(request):
-    if request.user.is_authenticated():
-        return feeds(request)
-    else:
-        return render(request, 'core/cover.html')
+
+    profiles = Profile.objects.all().order_by("votes")[:8]
+    return render(request, 'core/index.html', {'users':profiles, })
 
 @login_required
 def network(request):
@@ -34,42 +36,60 @@ def network(request):
     return render(request, 'core/network.html', { 'users': users })
 
 @login_required
-def profile(request, username):
-    page_user = get_object_or_404(User, username=username)
-    all_feeds = Feed.get_feeds().filter(user=page_user)
-    paginator = Paginator(all_feeds, FEEDS_NUM_PAGES)
-    feeds = paginator.page(1)
-    from_feed = -1
-    if feeds:
-        from_feed = feeds[0].id
+def profile(request, id):
+    page_user = get_object_or_404(User, pk=id)
+
     return render(request, 'core/profile.html', {
         'page_user': page_user,
-        'feeds': feeds,
-        'from_feed': from_feed,
-        'page': 1
         })
 
 @login_required
-def settings(request):
+def me(request):
+    user = request.user
+
+    profile_form = ProfileForm(instance=user)
+    change_password_form = ChangePasswordForm(instance=user)
+
+    return render(request, 'core/me.html', {'user':user, 'profile_form':profile_form, 'change_password_form':change_password_form})
+
+@login_required
+def update_profile(request):
     user = request.user
     if request.method == 'POST':
-        form = ProfileForm(request.POST)
-        if form.is_valid():
-            user.first_name = form.cleaned_data.get('first_name')
-            user.last_name = form.cleaned_data.get('last_name')
-            user.profile.job_title = form.cleaned_data.get('job_title')
-            user.email = form.cleaned_data.get('email')
-            user.profile.url = form.cleaned_data.get('url')
-            user.profile.location = form.cleaned_data.get('location')
+        profile_form = ProfileForm(request.POST)
+        if profile_form.is_valid():
+            user.profile.realname = profile_form.cleaned_data.get('realname')
+            gender = profile_form.cleaned_data.get('gender')
+            if gender is not 'm' or gender is not 'f':
+                gender = 'm'
+            user.profile.gender = gender
+            user.profile.major = profile_form.cleaned_data.get('major')
+            user.profile.enter_year = profile_form.cleaned_data.get('enter_year')
+            user.profile.wechat = profile_form.cleaned_data.get('wechat')
+            user.profile.phone = profile_form.cleaned_data.get('phone')
+            user.email = profile_form.cleaned_data.get('email')
+            user.profile.address = profile_form.cleaned_data.get('address')
             user.save()
             messages.add_message(request, messages.SUCCESS, 'Your profile were successfully edited.')
     else:
-        form = ProfileForm(instance=user, initial={
-            'job_title': user.profile.job_title,
-            'url': user.profile.url,
-            'location': user.profile.location
-            })
-    return render(request, 'core/settings.html', {'form':form})
+        messages.add_message(request, messages.SUCCESS, 'Something went wrong.')
+
+    return redirect('/me/')
+
+@login_required
+def update_password(request):
+    user = request.user
+    if request.method == 'POST':
+        change_password_form = ChangePasswordForm(request.POST)
+        if change_password_form.is_valid():
+            new_password = change_password_form.cleaned_data.get('new_password')
+            user.set_password(new_password)
+            user.save()
+            messages.add_message(request, messages.SUCCESS, 'Your password were successfully changed.')
+    else:
+        messages.add_message(request, messages.SUCCESS, 'Something went wrong.')
+    return redirect('/me/')
+
 
 @login_required
 def picture(request):
@@ -81,19 +101,6 @@ def picture(request):
         pass
     return render(request, 'core/picture.html', {'uploaded_picture': uploaded_picture})
 
-@login_required
-def password(request):
-    user = request.user
-    if request.method == 'POST':
-        form = ChangePasswordForm(request.POST)
-        if form.is_valid():
-            new_password = form.cleaned_data.get('new_password')
-            user.set_password(new_password)
-            user.save()
-            messages.add_message(request, messages.SUCCESS, 'Your password were successfully changed.')
-    else:
-        form = ChangePasswordForm(instance=user)
-    return render(request, 'core/password.html', {'form':form})
 
 @login_required
 def upload_picture(request):
