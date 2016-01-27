@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
+from unipath import Path
+PROJECT_DIR = Path(__file__).parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
@@ -36,6 +38,15 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
+
+    'eight_times_eight_project.activities',
+    'eight_times_eight_project.auth_new',
+    'eight_times_eight_project.core',
+    'eight_times_eight_project.feeds',
+    'eight_times_eight_project.messages_new',
+    'eight_times_eight_project.search',
+
 )
 
 MIDDLEWARE_CLASSES = (
@@ -77,7 +88,34 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.7/howto/static-files/
+LANGUAGES = (
+    ('zh', 'Chinese'),
+    ('en', 'English'),
+)
 
+LOCALE_PATHS = (PROJECT_DIR.child('locale'), )
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/1.6/howto/static-files/
+
+STATIC_ROOT = PROJECT_DIR.parent.child('staticfiles')
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = (
+    PROJECT_DIR.child('static'),
+)
+
+MEDIA_ROOT = PROJECT_DIR.parent.child('media')
+MEDIA_URL = '/media/'
+
+TEMPLATE_DIRS = (
+    PROJECT_DIR.child('templates'),
+)
+
+LOGIN_URL = '/'
+LOGIN_REDIRECT_URL = '/me/'
+
+ALLOWED_SIGNUP_DOMAINS = ['*']
+
+FILE_UPLOAD_TEMP_DIR = '/tmp/'
+FILE_UPLOAD_PERMISSIONS = 0644
