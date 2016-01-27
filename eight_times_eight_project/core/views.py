@@ -19,8 +19,13 @@ from eight_times_eight_project.auth_new.models import Profile
 
 def home(request):
 
+    if request.user:
+        user = request.user
+    else:
+        user = None
+
     profiles = Profile.objects.all().order_by("votes")[:8]
-    return render(request, 'core/index.html', {'users':profiles, })
+    return render(request, 'core/index.html', {'users':profiles, "user": user })
 
 @login_required
 def network(request):
@@ -35,12 +40,19 @@ def network(request):
         users = paginator.page(paginator.num_pages)
     return render(request, 'core/network.html', { 'users': users })
 
-@login_required
+
 def profile(request, id):
+
+    if request.user:
+        user = request.user
+    else:
+        user = None
+
     page_user = get_object_or_404(User, pk=id)
 
     return render(request, 'core/profile.html', {
         'page_user': page_user,
+        'user': user,
         })
 
 @login_required
