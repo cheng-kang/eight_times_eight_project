@@ -3,7 +3,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
-  <title>8 x 8 - 自己</title>
+  <title>8 x 8 - {{ user.profile.realname }} - 个人名片</title>
 
   <!-- CSS  -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -15,13 +15,13 @@
     <nav class="teal accent-4" role="navigation">
       <div class="nav-wrapper container">
               <ul id="nav-mobile" class="brand-logo center">
-                  <li ui-sref-active="active"><a ui-sref="top" href="/top">8 x 8</a></li>
+                  <li><a href="/">8 x 8</a></li>
               </ul>
               <ul id="nav-mobile" class="leftConnected">
-                  <li ui-sref-active="active" class="active"><a ui-sref="profile" ng-click="appHeader.goToProfile($event)" href="/profile">自己</a></li>
+                  <li><a href="/me">自己</a></li>
               </ul>
               <ul id="nav-mobile" class="right">
-                  <li ui-sref-active="active"><a ui-sref="world" href="/world">广场</a></li>
+                  <li><a href="/square">广场</a></li>
               </ul>
           </div>
           </div>

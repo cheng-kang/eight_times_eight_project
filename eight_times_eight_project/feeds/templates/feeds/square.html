@@ -29,13 +29,13 @@
     <nav class="teal accent-4" role="navigation">
       <div class="nav-wrapper container">
               <ul id="nav-mobile" class="brand-logo center">
-                  <li><a href="/top">8 x 8</a></li>
+                  <li><a href="/">8 x 8</a></li>
               </ul>
               <ul id="nav-mobile" class="leftConnected">
-                  <li><a href="/profile">自己</a></li>
+                  <li><a href="/me">自己</a></li>
               </ul>
               <ul id="nav-mobile" class="right">
-                  <li class="active"><a href="/world">广场</a></li>
+                  <li class="active"><a href="/square">广场</a></li>
               </ul>
           </div>
           </div>
@@ -69,7 +69,7 @@
     </div>
 
     <div class="section">
-
+        {% if user.pk %}
       <div class="row">
         <form class="col s12" id="compose-form">
           {% csrf_token %}
@@ -85,10 +85,11 @@
           </div>
         </form>
       </div>
+        {% endif %}
 
 
       <div class="stream-update">
-        <a href="#"><span class="new-posts"></span> {% trans 'new posts' %}</a>
+        <a href="#" style="display: none;"><span class="new-posts"></span> {% trans 'new posts' %}</a>
       </div>
       <div class="stream">
         {% for feed in feeds %}

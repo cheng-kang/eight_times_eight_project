@@ -11,8 +11,11 @@ from eight_times_eight_project.decorators import ajax_required
 
 FEEDS_NUM_PAGES = 10
 
-@login_required
 def feeds(request):
+    if request.user:
+        user = request.user
+    else:
+        user = None
     all_feeds = Feed.get_feeds()
     paginator = Paginator(all_feeds, FEEDS_NUM_PAGES)
     feeds = paginator.page(1)
@@ -23,13 +26,13 @@ def feeds(request):
         'feeds': feeds,
         'from_feed': from_feed, 
         'page': 1,
+        'user': user,
         })
 
 def feed(request, pk):
     feed = get_object_or_404(Feed, pk=pk)
     return render(request, 'feeds/square.html', {'feed': feed})
 
-@login_required
 @ajax_required
 def load(request):
     from_feed = request.GET.get('from_feed')
@@ -70,7 +73,6 @@ def _html_feeds(last_feed, user, csrf_token, feed_source='all'):
         )
     return html
 
-@login_required
 @ajax_required
 def load_new(request):
     last_feed = request.GET.get('last_feed')
@@ -79,7 +81,6 @@ def load_new(request):
     html = _html_feeds(last_feed, user, csrf_token)
     return HttpResponse(html)
 
-@login_required
 @ajax_required
 def check(request):
     last_feed = request.GET.get('last_feed')

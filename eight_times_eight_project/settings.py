@@ -112,7 +112,7 @@ TEMPLATE_DIRS = (
     PROJECT_DIR.child('templates'),
 )
 
-LOGIN_URL = '/'
+LOGIN_URL = '/signin'
 LOGIN_REDIRECT_URL = '/me/'
 
 ALLOWED_SIGNUP_DOMAINS = ['*']
