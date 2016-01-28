@@ -73,7 +73,7 @@
 			<div class="row" style="margin-left:8%;margin-right:8%;margin-bottom:20px">
 				<div class="col s4 left-align" style="text-align:center;font-weight:300">
                     {% if item.pk in voted_id_list %}
-					<a class="btn-floating btn-large waves-effect waves-light teal accent-4 unvote_btn" user-id="{{ item.pk }}" csrf="{{ csrf_token }}" ><i class="material-icons thumb_up_white">thumb_up</i></a><br>
+					<a class="btn-floating btn-large waves-effect waves-light teal accent-4 vote_btn unvote_btn" user-id="{{ item.pk }}" csrf="{{ csrf_token }}" ><i class="material-icons thumb_up_white">thumb_up</i></a><br>
 					<span id="vote_{{ item.pk }}_text">取消</span>
                     {% else %}
 					<a class="btn-floating btn-large waves-effect waves-light white vote_btn" user-id="{{ item.pk }}" csrf="{{ csrf_token }}"><i class="material-icons thumb_up">thumb_up</i></a><br>
@@ -82,7 +82,7 @@
 				</div>
 				<div class="col s4 valign">
 					<br>
-					<span style="color:#00bfa5;font-weight:300"><span id="vote_{{ item.pk }}">{{ item.votes }}</span>次<br>
+					<span style="color:#00bfa5;font-weight:300"><span id="vote_{{ item.pk }}_num">{{ item.votes }}</span>次<br>
 					『推荐』</span>
 				</div>
 				<div class="col s4 right-align" style="text-align:center;font-weight:300">
@@ -90,11 +90,11 @@
 					<a class="btn-floating btn-large waves-effect waves-light teal accent-4"><i class="material-icons person_pin_white">person_pin</i></a><br>
 					好友
                     {% elif item.pk in pending_friend_id_list %}
-					<a class="btn-floating btn-large waves-effect waves-light teal accent-3 "><i class="material-icons person_pin_white">person_pin</i></a><br>
-					申请中
+					<a class="btn-floating btn-large waves-effect waves-light teal accent-3 add_friend_btn unadd_friend_btn" user-id="{{ item.pk }}" csrf="{{ csrf_token }}"><i class="material-icons person_pin_white">person_pin</i></a><br>
+					<span id="friend_{{ item.pk }}_text">申请中</span>
                     {% else %}
-					<a class="btn-floating btn-large waves-effect waves-light white add_friend_btn" user-id="{{ item.pk }} csrf="{{ csrf_token }}"><i class="material-icons person_pin">person_pin</i></a><br>
-					加好友
+					<a class="btn-floating btn-large waves-effect waves-light white add_friend_btn" user-id="{{ item.pk }}" csrf="{{ csrf_token }}"><i class="material-icons person_pin">person_pin</i></a><br>
+					<span id="friend_{{ item.pk }}_text">加好友</span>
                     {% endif %}
 				</div>
 			</div>
@@ -150,52 +150,61 @@
           cache: false,
           success: function (data) {
 
-              if(link.hasClass("vote_btn")) {
-                  link.removeClass("vote_btn white").addClass("teal accent-4 unvote_btn");
-                  icon.removeClass("thumb_up").addClass("thumb_up_white");
-                  text.html("取消")
-              }else if(link.hasClass("unvote_btn")){
-                  link.removeClass("teal accent-4 unvote_btn").addClass("vote_btn white");
-                  icon.removeClass("thumb_up_white").addClass("thumb_up");
-                  text.html("推荐")
+              if( data == "cant"){
+                console.log(data);
+              }else{
+                  if(link.hasClass("unvote_btn")) {
+                      link.removeClass("teal accent-4 unvote_btn").addClass("white");
+                      icon.removeClass("thumb_up_white").addClass("thumb_up");
+                      text.html("推荐")
+                  }else{
+                      link.removeClass("white").addClass("teal accent-4 unvote_btn");
+                      icon.removeClass("thumb_up").addClass("thumb_up_white");
+                      text.html("取消")
+                  }
+                  console.log(data);
+                $("#vote_"+vote).html(data);
               }
-              console.log(data);
-              $("#vote_"+vote).html(data);
           }
         });
         return false;
       });
 
-      $(".unvote_btn").on("click", function () {
+      $(".add_friend_btn").on("click", function () {
           var link = $(this);
           var icon = $(this).children();
-        var vote = $(this).attr("user-id");
+        var friend = $(this).attr("user-id");
         var csrf = $(this).attr("csrf");
-          var text = $("#vote_"+vote+"_text");
+          var text = $("#friend_"+friend+"_text");
         $.ajax({
-          url: '/vote/',
+          url: '/add_friend/',
           data: {
-            'vote': vote,
+            'user_id': friend,
             'csrfmiddlewaretoken': csrf
           },
           type: 'post',
           cache: false,
           success: function (data) {
 
-              if(link.hasClass("vote_btn")) {
-                  link.removeClass("vote_btn white").addClass("teal accent-4 unvote_btn");
-                  icon.removeClass("thumb_up").addClass("thumb_up_white");
-                  text.html("取消")
-              }else if(link.hasClass("unvote_btn")){
-                  link.removeClass("teal accent-4 unvote_btn").addClass("vote_btn white");
-                  icon.removeClass("thumb_up_white").addClass("thumb_up");
-                  text.html("推荐")
+              if( data == "cant"){
+                console.log(data);
+              }else {
+                  if (link.hasClass("unadd_friend_btn")) {
+                      link.removeClass("teal accent-4 unadd_friend_btn").addClass("white");
+                      icon.removeClass("person_pin_white").addClass("person_pin");
+                      text.html("加好友")
+                  } else {
+                      link.removeClass("white").addClass("teal accent-4 unadd_friend_btn");
+                      icon.removeClass("person_pin").addClass("person_pin_white");
+                      text.html("申请中")
+                  }
+                  console.log(data);
               }
-              $("#vote_"+vote).html(data);
           }
         });
         return false;
       });
+
 
       $("ul.stream").on("click", ".comment", function () {
         var post = $(this).closest(".post");

@@ -202,43 +202,52 @@ def save_uploaded_picture(request):
 @login_required
 @ajax_required
 def vote(request):
-    vote_id = request.POST['vote']
-    to_user = User.objects.get(pk=vote_id)
     user = request.user
-    vote = Activity.objects.filter(activity_type=Activity.VOTE, to_user=vote_id, user=user)
-    if vote:
-        to_user.profile.votes -= 1
-        to_user.save()
-        user.profile.unotify_voted(to_user)
-        vote.delete()
+    vote_id = request.POST['vote']
+    print vote_id,user.pk,str(vote_id)==str(user.pk)
+    if str(vote_id)==str(user.pk):
+        return HttpResponse("cant")
     else:
-        vote = Activity(activity_type=Activity.VOTE, to_user=vote_id, user=user)
-        vote.save()
-        to_user.profile.votes += 1
-        to_user.save()
-        user.profile.notify_voted(to_user)
-    return HttpResponse(to_user.profile.votes)
+        to_user = User.objects.get(pk=vote_id)
+        vote = Activity.objects.filter(activity_type=Activity.VOTE, to_user=vote_id, user=user)
+        if vote:
+            to_user.profile.votes -= 1
+            to_user.save()
+            user.profile.unotify_voted(to_user)
+            vote.delete()
+        else:
+            vote = Activity(activity_type=Activity.VOTE, to_user=vote_id, user=user)
+            vote.save()
+            to_user.profile.votes += 1
+            to_user.save()
+            user.profile.notify_voted(to_user)
+        return HttpResponse(to_user.profile.votes)
 
 @login_required
 @ajax_required
 def add_friend(request):
-    user_id = request.POST['user_id']
-    to_user = User.objects.get(pk=user_id)
     user = request.user
-    friend = Activity.objects.filter(activity_type=Activity.ADD_FRIEND, to_user=user_id, user=user)
-
-    m = ""
-    if friend:
-        user.profile.unotify_added(to_user)
-        # to_user.profile.notify_added(user)
-        friend.delete()
-        m = "cancel"
+    user_id = request.POST['user_id']
+    print str(user_id)==str(user.pk),user_id,user.pk
+    if str(user_id)==str(user.pk):
+        return HttpResponse("cant")
     else:
-        friend = Activity(activity_type=Activity.ADD_FRIEND, to_user=user_id, user=user)
-        friend.save()
-        user.profile.notify_added(to_user)
-        m = "sent"
-    return HttpResponse(m)
+        to_user = User.objects.get(pk=user_id)
+        user = request.user
+        friend = Activity.objects.filter(activity_type=Activity.ADD_FRIEND, to_user=user_id, user=user)
+
+        m = ""
+        if friend:
+            user.profile.unotify_added(to_user)
+            # to_user.profile.notify_added(user)
+            friend.delete()
+            m = "cancel"
+        else:
+            friend = Activity(activity_type=Activity.ADD_FRIEND, to_user=user_id, user=user)
+            friend.save()
+            user.profile.notify_added(to_user)
+            m = "sent"
+        return HttpResponse(m)
 
 # 此函数逻辑与发送好友申请函数逻辑略有不同
 @login_required
