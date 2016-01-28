@@ -69,7 +69,23 @@
 					</ul>
 				</div>
 			</div>
-            {% if user.pk %}
+            {% if user.pk and user.pk == item.pk %}
+			<div class="row" style="margin-left:8%;margin-right:8%;margin-bottom:20px">
+				<div class="col s4 left-align" style="text-align:center;font-weight:300">
+					<a class="btn-floating btn-large waves-effect waves-light white"><i class="material-icons thumb_up">thumb_up</i></a><br>
+					推荐
+				</div>
+				<div class="col s4 valign">
+					<br>
+					<span style="color:#00bfa5;font-weight:300">{{ item.votes }}次<br>
+					『推荐』</span>
+				</div>
+				<div class="col s4 right-align" style="text-align:center;font-weight:300">
+					<a class="btn-floating btn-large waves-effect waves-light white"><i class="material-icons person_pin">person_pin</i></a><br>
+					加好友
+				</div>
+			</div>
+            {% elif user.pk %}
 			<div class="row" style="margin-left:8%;margin-right:8%;margin-bottom:20px">
 				<div class="col s4 left-align" style="text-align:center;font-weight:300">
                     {% if item.pk in voted_id_list %}

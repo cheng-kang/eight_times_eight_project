@@ -80,7 +80,7 @@
         margin: 0 5px;
         word-wrap: break-word;
         text-align: left;
-        background: #798;
+        background: #b2dfdb;
         border-radius: 8px;
         padding: 10px;
     }
@@ -135,7 +135,7 @@
             </div>
             <div class="chat-you">
                 <img class="chet-avatar circle" src="./avatar.jpg">
-                <div class="chat-massage">2</div>
+                <div class="chat-massage">你们已经成为好友，现在可以开始聊天了你们已经成为好友，现在可以开始聊天了</div>
             </div>
         </div>
         <div class="chat-bottom">
@@ -160,7 +160,7 @@
 
 
             //websocket
-            var ws = new WebSocket("ws://127.0.0.1/chat");
+            var ws = new WebSocket("ws://127.0.0.1:8000/chat");
 
             ws.onopen = function() {};
 

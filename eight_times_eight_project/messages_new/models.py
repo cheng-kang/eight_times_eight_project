@@ -46,6 +46,20 @@ class Message(models.Model):
                 })
         return users
 
+    @staticmethod
+    def get_conversations_detail(user):
+        conversations = Message.objects.filter(user=user).values('conversation').annotate(last=Max('date')).annotate(content=Max('message')).order_by('-last')
+        users = []
+        for conversation in conversations:
+            print conversation
+            users.append({
+                'user': User.objects.get(pk=conversation['conversation']),
+                'date': conversation['last'],
+                'content': conversation['content'],
+                'unread': Message.objects.filter(user=user, conversation__pk=conversation['conversation'], is_read=False).count(),
+                })
+        return users
+
     #Message.objects.filter(is_read=False, user__username='vitorfs').values('to_user').annotate(Count('to_user')).order_by()
     #Message.objects.filter(user__username='vitorfs').values('to_user', 'last').annotate(last=Max('date')).order_by()
     #Message.objects.filter(user__username='vitorfs').values('to_user').annotate(last=Max('date')).order_by('last')

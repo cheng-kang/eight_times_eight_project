@@ -19,6 +19,7 @@ from eight_times_eight_project.decorators import ajax_required
 
 from eight_times_eight_project.activities.models import Activity, Notification
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseForbidden
+from eight_times_eight_project.messages_new.models import Message
 
 def home(request):
 
@@ -30,7 +31,7 @@ def home(request):
         for item in friends:
             friend_id_list.append(item.user.pk)
 
-        pending_friends = Activity.objects.filter(activity_type=Activity.ADD_FRIEND, user=user.pk)
+        pending_friends = Activity.objects.filter(activity_type=Activity.ADD_FRIEND, user=user)
         pending_friend_id_list = []
         for item in pending_friends:
             pending_friend_id_list.append(item.to_user)
@@ -39,6 +40,10 @@ def home(request):
         voted_id_list = []
         for item in voted:
             voted_id_list.append(item.to_user)
+
+        print user.pk,user.pk.__doc__ in voted_id_list
+
+        print friend_id_list,pending_friend_id_list,voted_id_list
 
 
     else:
@@ -73,14 +78,37 @@ def profile(request, id):
 
     if request.user:
         user = request.user
+
+        friends = Activity.objects.filter(activity_type=Activity.CONFIRM_FRIEND, to_user=user.pk)
+        friend_id_list = []
+        for item in friends:
+            friend_id_list.append(item.user.pk)
+
+        pending_friends = Activity.objects.filter(activity_type=Activity.ADD_FRIEND, user=user)
+        pending_friend_id_list = []
+        for item in pending_friends:
+            pending_friend_id_list.append(item.to_user)
+
+        voted = Activity.objects.filter(activity_type=Activity.VOTE, user=user)
+        voted_id_list = []
+        for item in voted:
+            voted_id_list.append(item.to_user)
+
+
     else:
         user = None
+        friend_id_list = None
+        pending_friend_id_list = None
+        voted_id_list = None
 
     page_user = get_object_or_404(User, pk=id)
 
     return render(request, 'core/profile.html', {
         'page_user': page_user,
         'user': user,
+       'friend_id_list': friend_id_list,
+       'pending_friend_id_list': pending_friend_id_list,
+       'voted_id_list': voted_id_list,
         })
 
 @login_required
@@ -261,10 +289,10 @@ def confirm_friend(request):
     m = ""
     # 如果存在该好友申请activity,则将其修改为确认好友activity,并添加当前用户确认好友activity
     if friend:
-        friend.activity_type = Activity.CONFIRM_FRIEND
-        friend.save()
+        friend.update(activity_type=Activity.CONFIRM_FRIEND)
 
         new_friend = Activity(activity_type=Activity.CONFIRM_FRIEND, to_user=user_id, user=user)
+        new_friend.save()
         # 给双方好友数 +1 并保存
         to_user.profile.friends += 1
         to_user.save()
@@ -274,7 +302,10 @@ def confirm_friend(request):
         # 发送好友添加成功通知
         user.profile.notify_confirmed(to_user)
         to_user.profile.notify_confirmed(user)
-        friend.delete()
+        to_user.profile.unotify_added(user)
+
+        Message.send_message(user, to_user, "我们成为好友了。")
+
         m = "ok"
     # 如不存在则报错
     else:
@@ -325,6 +356,7 @@ def decline_friend(request):
         friend.delete()
 
     # 发送通知
-    to_user.profile.notify_declined(user)
+    user.profile.notify_declined(to_user)
+    to_user.profile.unotify_added(user)
 
     return HttpResponse("declined")

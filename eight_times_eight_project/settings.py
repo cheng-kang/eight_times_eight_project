@@ -63,7 +63,7 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'eight_times_eight_project.urls'
 
 WSGI_APPLICATION = 'eight_times_eight_project.wsgi.application'
-
+WEBSOCKET_ACCEPT_ALL = True
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases

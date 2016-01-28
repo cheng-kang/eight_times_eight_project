@@ -1,7 +1,8 @@
 from django.conf.urls import patterns, include, url
 
 urlpatterns = patterns('eight_times_eight_project.messages_new.views',
-    url(r'^$', 'inbox', name='inbox'),
+    # url(r'^$', 'inbox', name='inbox'),
+    url(r'^$', 'message_list', name='message_list'),
     url(r'^new/$', 'new', name='new_message'),
     url(r'^send/$', 'send', name='send_message'),
     url(r'^delete/$', 'delete', name='delete_message'),

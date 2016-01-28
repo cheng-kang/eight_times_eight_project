@@ -7,7 +7,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>8 x 8 - 系统通知</title>
+<title>8 x 8 - 消息列表</title>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
 <style type="text/css">
@@ -54,51 +54,22 @@
 	<div class="divider">
 	</div>
 	<div class="section">
-		<h5 style="color:#7f7f7f;font-weight:300">好友申请 {{ count }}</h5>
+		<h5 style="color:#7f7f7f;font-weight:300">消息列表</h5>
 
-        {% for item in add_friend_notifications %}
-		<ul class="collection z-depth-2" style="text-align:left;padding-top:10px">
-			<li class="collection-item avatar"><a href="/user/{{ item.from_user.pk }}"><img src="{{ item.from_user.profile.get_picture }}" alt="" class="circle"><span class="title">{{ item.from_user.profile.realname }}</span></a>
-			<p>
-				<span style="font-weight:300;font-size:.8em">{{ item.date|naturaltime }}</span><br>
-				<span style="font-weight:300">申请成为你的好友。</span>
-			</p>
-			<div class="row">
-			</div>
-			<div class="row" style="margin-left:8%;margin-right:8%;margin-bottom:20px">
-				<div class="col l4 s6 left-align" style="text-align:center;font-weight:300">
-					<a class="waves-effect waves-light btn teal accent-4 confirm_btn" user-id="{{ item.from_user.pk }}" csrf="{{ csrf_token }}">同意</a>
-				</div>
-				<div class="col l4 hide-on-med-and-down">
-					<br>
-				</div>
-				<div class="col l4 s6 right-align" style="text-align:center;font-weight:300">
-					<a class="waves-effect waves-light btn teal accent-4 decline_btn" user-id="{{ item.from_user.pk }}" csrf="{{ csrf_token }}">拒绝</a>
-				</div>
-			</div>
-			</li>
-		</ul>
-        {% empty %}
-          <small>{% trans '暂无通知' %}</small>
-        {% endfor %}
-	</div>
-	<div class="divider">
-	</div>
-	<div class="section">
-		<h5 style="color:#7f7f7f;font-weight:300">系统通知</h5>
-
-        {% for item in notifications %}
 		<ul class="collection" style="text-align:left">
-			<li class="collection-item avatar"><a href="/user/{{ item.from_user.pk }}"><img src="{{ item.from_user.profile.get_picture }}" alt="" class="circle"><span class="title">{{ item.from_user.profile.realname }}</span></a>
+        {% for item in conversations %}
+            <a href="/messages/{{ item.user.username }}">
+			<li class="collection-item avatar"><img src="{{ item.user.profile.get_picture }}" alt="" class="circle"><span class="title">{{ item.user.profile.realname }}</span>
 			<p>
-				<span style="font-weight:300;font-size:.8em">{{ item.date|naturaltime }}</span><br>
-				<span style="font-weight:300">{{ item|safe }}</span>
+				<span style="font-weight:300;font-size:.8em">{{ item.date|date:'N d G:i' }}</span><br>
+				<span style="font-weight:300">{{ item.content|safe }}</span>
 			</p>
 			</li>
-		</ul>
+            </a>
         {% empty %}
           <small>{% trans '暂无通知' %}</small>
         {% endfor %}
+		</ul>
 	</div>
 </div>
 <footer class="page-footer teal accent-4" style="padding-top:0">

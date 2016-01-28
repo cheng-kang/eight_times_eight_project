@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
 <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection">
 <style type="text/css">
-.btn-floating>i.thumb_up{color:#12c5a2}.btn-floating>i.person_pin{color:#12c5a2}
+.btn-floating>i.thumb_up{color:#12c5a2}.btn-floating>i.person_pin{color:#12c5a2}.btn-floating>i.thumb_up_white{color:#fff}.btn-floating>i.person_pin_white{color:#fff}
 </style>
 </head>
 <body>
@@ -16,13 +16,13 @@
 	<nav class="teal accent-4" role="navigation">
 	<div class="nav-wrapper container">
 		<ul id="nav-mobile" class="brand-logo center">
-			<li><a href="/top">8 x 8</a></li>
+			<li><a href="/">8 x 8</a></li>
 		</ul>
 		<ul id="nav-mobile" class="leftConnected">
-			<li><a href="/profile">自己</a></li>
+			<li><a href="/me">自己</a></li>
 		</ul>
 		<ul id="nav-mobile" class="right">
-			<li><a href="/world">广场</a></li>
+			<li><a href="/square">广场</a></li>
 		</ul>
 	</div>
 	</nav>
@@ -85,6 +85,7 @@
 					</ul>
 				</div>
 			</div>
+            {% if user.pk and user.pk == item.user_id %}
 			<div class="row" style="margin-left:8%;margin-right:8%;margin-bottom:20px">
 				<div class="col s4 left-align" style="text-align:center;font-weight:300">
 					<a class="btn-floating btn-large waves-effect waves-light white"><i class="material-icons thumb_up">thumb_up</i></a><br>
@@ -100,6 +101,52 @@
 					加好友
 				</div>
 			</div>
+            {% elif user.pk %}
+			<div class="row" style="margin-left:8%;margin-right:8%;margin-bottom:20px">
+				<div class="col s4 left-align" style="text-align:center;font-weight:300">
+                    {% if item.user_id in voted_id_list %}
+					<a class="btn-floating btn-large waves-effect waves-light teal accent-4 vote_btn unvote_btn" user-id="{{ item.user_id }}" csrf="{{ csrf_token }}" ><i class="material-icons thumb_up_white">thumb_up</i></a><br>
+					<span id="vote_{{ item.user_id }}_text">取消</span>
+                    {% else %}
+					<a class="btn-floating btn-large waves-effect waves-light white vote_btn" user-id="{{ item.user_id }}" csrf="{{ csrf_token }}"><i class="material-icons thumb_up">thumb_up</i></a><br>
+					<span id="vote_{{ item.user_id }}_text">推荐</span>
+                    {% endif %}
+				</div>
+				<div class="col s4 valign">
+					<br>
+					<span style="color:#00bfa5;font-weight:300"><span id="vote_{{ item.user_id }}_num">{{ item.votes }}</span>次<br>
+					『推荐』</span>
+				</div>
+				<div class="col s4 right-align" style="text-align:center;font-weight:300">
+                    {% if item.user_id in friend_id_list %}
+					<a class="btn-floating btn-large waves-effect waves-light teal accent-4"><i class="material-icons person_pin_white">person_pin</i></a><br>
+					好友
+                    {% elif item.user_id in pending_friend_id_list %}
+					<a class="btn-floating btn-large waves-effect waves-light teal accent-3 add_friend_btn unadd_friend_btn" user-id="{{ item.user_id }}" csrf="{{ csrf_token }}"><i class="material-icons person_pin_white">person_pin</i></a><br>
+					<span id="friend_{{ item.user_id }}_text">申请中</span>
+                    {% else %}
+					<a class="btn-floating btn-large waves-effect waves-light white add_friend_btn" user-id="{{ item.user_id }}" csrf="{{ csrf_token }}"><i class="material-icons person_pin">person_pin</i></a><br>
+					<span id="friend_{{ item.user_id }}_text">加好友</span>
+                    {% endif %}
+				</div>
+			</div>
+            {% else %}
+			<div class="row" style="margin-left:8%;margin-right:8%;margin-bottom:20px">
+				<div class="col s4 left-align" style="text-align:center;font-weight:300">
+					<a class="btn-floating btn-large waves-effect waves-light white" href="/signin"><i class="material-icons thumb_up">thumb_up</i></a><br>
+					推荐
+				</div>
+				<div class="col s4 valign">
+					<br>
+					<span style="color:#00bfa5;font-weight:300">{{ item.votes }}次<br>
+					『推荐』</span>
+				</div>
+				<div class="col s4 right-align" style="text-align:center;font-weight:300">
+					<a class="btn-floating btn-large waves-effect waves-light white" href="/signin"><i class="material-icons person_pin">person_pin</i></a><br>
+					加好友
+				</div>
+			</div>
+            {% endif %}
 			<div class="row">
 			</div>
 		</div>
@@ -116,6 +163,82 @@
 </footer>
 <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
-<script type="text/javascript">!function(n){n(function(){n(".button-collapse").sideNav()})}(jQuery);</script>
+<script type="text/javascript">
+    $(function () {
+
+
+      $(".vote_btn").on("click", function () {
+          var link = $(this);
+          var icon = $(this).children();
+        var vote = $(this).attr("user-id");
+        var csrf = $(this).attr("csrf");
+          var text = $("#vote_"+vote+"_text");
+        $.ajax({
+          url: '/vote/',
+          data: {
+            'vote': vote,
+            'csrfmiddlewaretoken': csrf
+          },
+          type: 'post',
+          cache: false,
+          success: function (data) {
+
+              if( data == "cant"){
+                console.log(data);
+              }else{
+                  if(link.hasClass("unvote_btn")) {
+                      link.removeClass("teal accent-4 unvote_btn").addClass("white");
+                      icon.removeClass("thumb_up_white").addClass("thumb_up");
+                      text.html("推荐")
+                  }else{
+                      link.removeClass("white").addClass("teal accent-4 unvote_btn");
+                      icon.removeClass("thumb_up").addClass("thumb_up_white");
+                      text.html("取消")
+                  }
+                  console.log(data);
+                $("#vote_"+vote+"_num").html(data);
+              }
+          }
+        });
+        return false;
+      });
+
+      $(".add_friend_btn").on("click", function () {
+          var link = $(this);
+          var icon = $(this).children();
+        var friend = $(this).attr("user-id");
+        var csrf = $(this).attr("csrf");
+          var text = $("#friend_"+friend+"_text");
+        $.ajax({
+          url: '/add_friend/',
+          data: {
+            'user_id': friend,
+            'csrfmiddlewaretoken': csrf
+          },
+          type: 'post',
+          cache: false,
+          success: function (data) {
+
+              if( data == "cant"){
+                console.log(data);
+              }else {
+                  if (link.hasClass("unadd_friend_btn")) {
+                      link.removeClass("teal accent-4 unadd_friend_btn").addClass("white");
+                      icon.removeClass("person_pin_white").addClass("person_pin");
+                      text.html("加好友")
+                  } else {
+                      link.removeClass("white").addClass("teal accent-4 unadd_friend_btn");
+                      icon.removeClass("person_pin").addClass("person_pin_white");
+                      text.html("申请中")
+                  }
+                  console.log(data);
+              }
+          }
+        });
+        return false;
+      });
+
+    });
+</script>
 </body>
 </html>

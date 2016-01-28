@@ -7,10 +7,10 @@ from django.contrib.auth.models import User
 import json
 from eight_times_eight_project.messages_new.models import Message
 
+
 @login_required
 def inbox(request):
     conversations = Message.get_conversations(user=request.user)
-    active_conversation = None
     messages = None
     if conversations:
         conversation = conversations[0]
@@ -20,14 +20,26 @@ def inbox(request):
         for conversation in conversations:
             if conversation['user'].username == active_conversation:
                 conversation['unread'] = 0
-    return render(request, 'messages/inbox.html', {
+    return render(request, 'messages_new/chat.html', {
         'messages': messages,
         'conversations': conversations,
-        'active': active_conversation
         })
+
+
+@login_required
+def message_list(request):
+    user = request.user
+    conversations = Message.get_conversations_detail(user=user)
+
+    return render(request, 'messages_new/message_list.html', {
+        'user': user,
+        'conversations': conversations,
+        })
+
 
 @login_required
 def messages(request, username):
+    user = request.user
     conversations = Message.get_conversations(user=request.user)
     active_conversation = username
     messages = Message.objects.filter(user=request.user, conversation__username=username)
@@ -35,11 +47,27 @@ def messages(request, username):
     for conversation in conversations:
         if conversation['user'].username == username:
             conversation['unread'] = 0
-    return render(request, 'messages/inbox.html', {
+    return render(request, 'messages_new/chat.html', {
         'messages': messages,
         'conversations': conversations,
+        'user': user,
         'active': active_conversation
         })
+
+# @login_required
+# def messages(request, username):
+#     conversations = Message.get_conversations(user=request.user)
+#     active_conversation = username
+#     messages = Message.objects.filter(user=request.user, conversation__username=username)
+#     messages.update(is_read=True)
+#     for conversation in conversations:
+#         if conversation['user'].username == username:
+#             conversation['unread'] = 0
+#     return render(request, 'messages_new/chat.html', {
+#         'messages': messages,
+#         'conversations': conversations,
+#         'active': active_conversation
+#         })
 
 @login_required
 def new(request):
@@ -53,16 +81,16 @@ def new(request):
                 to_user_username = to_user_username[to_user_username.rfind('(')+1:len(to_user_username)-1]
                 to_user = User.objects.get(username=to_user_username)
             except Exception, e:
-                return redirect('/messages/new/')
+                return redirect('/messages_new/new/')
         message = request.POST.get('message')
         if len(message.strip()) == 0:
-            return redirect('/messages/new/')
+            return redirect('/messages_new/new/')
         if from_user != to_user:
             Message.send_message(from_user, to_user, message)
-        return redirect(u'/messages/{0}/'.format(to_user_username))
+        return redirect(u'/messages_new/{0}/'.format(to_user_username))
     else:
         conversations = Message.get_conversations(user=request.user)
-        return render(request, 'messages/new.html', {'conversations': conversations})
+        return render(request, 'messages_new/new.html', {'conversations': conversations})
 
 @login_required
 @ajax_required
@@ -81,7 +109,7 @@ def send(request):
             return HttpResponse()
         if from_user != to_user:
             msg = Message.send_message(from_user, to_user, message)
-            return render(request, 'messages/includes/partial_message.html', {'message': msg})
+            return render(request, 'messages_new/includes/partial_message.html', {'message': msg})
         return HttpResponse()
     else:
         return HttpResponseBadRequest()

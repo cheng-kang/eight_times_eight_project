@@ -1,7 +1,7 @@
 $(function () {
   $("#send").submit(function () {
     $.ajax({
-      url: '/messages/send/',
+      url: '/messages_new/send/',
       data: $("#send").serialize(),
       cache: false,
       type: 'post',
