@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0" />
+    <title>8 x 8 - 好友列表</title>
+    <!-- CSS  -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
+    <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection" />
+    <style type="text/css">
+    .input-field>i.prefix {
+        color: #646464;
+    }
+    
+    tbody>tr>td {
+        padding: 5px 5px;
+    }
+    
+    body {
+        display: flex;
+        height: 100vh;
+        flex-direction: column;
+        background: #f9f9f9;
+    }
+    
+    .chat-box {
+        display: flex;
+        flex: 1 1 50vh;
+        flex-direction: column;
+    }
+    
+    .chat-window {
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+        padding: 5px;
+        background: #f9f9f9;
+        overflow-y: scroll;
+    }
+    
+    .chat-me {
+        flex: 0 0 auto;
+        align-self: flex-end;
+        display: flex;
+        flex-direction: row-reverse;
+        min-height: 40px;
+        margin: 5px 0;
+    }
+    
+    .chat-you {
+        flex: 0 0 auto;
+        align-self: flex-start;
+        display: flex;
+        flex-direction: row;
+        min-height: 40px;
+        margin: 5px 0;
+    }
+    
+    .chat-system {
+        flex: 0 0 auto;
+        align-self: center;
+        background: #9aa;
+        border-radius: 10px;
+        padding: 3px 30px;
+        font-size: 12px;
+        color: #eee;
+        line-height: 12px;
+        min-width: 10vw;
+        max-width: 50vw;
+        margin: 5px 0;
+        word-wrap: break-word;
+    }
+    
+    .chat-massage {
+        max-width: 50vw;
+        min-width: 50px;
+        flex: 1 1 10px;
+        margin: 0 5px;
+        word-wrap: break-word;
+        text-align: left;
+        background: #798;
+        border-radius: 8px;
+        padding: 10px;
+    }
+    
+    .chet-avatar {
+        flex: 0 0 auto;
+        height: 40px;
+    }
+    
+    .chat-bottom {
+        padding: 5px 5vw;
+        flex: 0 0 auto;
+        background: #fff;
+    }
+    
+    @media only screen and (min-width: 601px) {
+        .chat-bottom {
+            padding: 5px 7.5vw;
+        }
+    }
+    
+    @media only screen and (min-width: 993px) {
+        .chat-bottom {
+            padding: 5px 15vw;
+        }
+    }
+    </style>
+</head>
+
+<body>
+    <div class="navbar-fixed">
+        <nav class="teal accent-4" role="navigation">
+            <div class="nav-wrapper container">
+                <ul id="nav-mobile" class="brand-logo center">
+                    <li><a href="/top">8 x 8</a></li>
+                </ul>
+                <ul id="nav-mobile" class="leftConnected">
+                    <li><a href="/profile">自己</a></li>
+                </ul>
+                <ul id="nav-mobile" class="right">
+                    <li><a href="/world">广场</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+    <div class="chat-box">
+        <div id="chat-window" class="chat-window  container center-align">
+            <div class="chat-system">你们已经成为好友，现在可以开始聊天了</div>
+            <div class="chat-me">
+                <img class="chet-avatar circle" src="./avatar.jpg">
+                <div class="chat-massage">1</div>
+            </div>
+            <div class="chat-you">
+                <img class="chet-avatar circle" src="./avatar.jpg">
+                <div class="chat-massage">2</div>
+            </div>
+        </div>
+        <div class="chat-bottom">
+            <form action="#">
+                <div class="file-field">
+                    <button id="button" class="btn" style="float:right;height:40px">发送</button>
+                    <div style="overflow:hidden">
+                        <textarea id="textarea" style="font-size:18px;max-height:80px;padding:0;margin:0" class="materialize-textarea"></textarea>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!--  Scripts-->
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
+    <script type="text/javascript">
+    (function($) {
+        $(function() {
+            //侧边栏
+            $('.button-collapse').sideNav();
+
+
+            //websocket
+            var ws = new WebSocket("ws://127.0.0.1/chat");
+
+            ws.onopen = function() {};
+
+            ws.onmessage = function(evt) {
+
+                var msgString;
+                try {
+                    var obj = eval('(' + evt.data + ')');
+                } catch (e) {
+
+                    msgString = '<div class="chat-system">数据解析好像出错了</div>';
+                    $('#chat-window').append(msgString);
+                    return 0;
+                }
+
+                if (obj.type == 'user') {
+                    msgString = '<div class="chat-you"> <img class="chet-avatar circle" src ="./' + obj.id + '.jpg"><div class="chat-massage">' + obj.massage + '</div></div> ';
+                } else if (obj.type == 'system') {
+                    msgString = '<div class="chat-system">' + obj.massage + '</div>';
+                };
+
+                $('#chat-window').append(msgString);
+            };
+            ws.onclose = function(evt) {};
+
+            ws.onerror = function(evt) {
+                var msgString = '<div class="chat-system">网络好像出错了</div>';
+                $('#chat-window').append(msgString);
+            };
+
+
+            $('#button').click(function() {
+                var massage = $('#textarea').val();
+                $('#textarea').val('');
+
+                // var jsonString = '{"type":"user","id":'+this.id+',"massage":"'+massage+'"}';
+                // ws.send(jsonString);
+
+                var msgString = '<div class="chat-me"><img class="chet-avatar circle" src="./avatar.jpg"><div class="chat-massage">' + massage + '</div></div>';
+                console.log(msgString);
+                $('#chat-window').append(msgString);
+
+            })
+
+        }); // end of document ready
+    })(jQuery); // end of jQuery name space
+    </script>
+</body>
+
+</html>

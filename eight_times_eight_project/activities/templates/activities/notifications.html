@@ -68,13 +68,13 @@
 			</div>
 			<div class="row" style="margin-left:8%;margin-right:8%;margin-bottom:20px">
 				<div class="col l4 s6 left-align" style="text-align:center;font-weight:300">
-					<a class="waves-effect waves-light btn teal accent-4">同意</a>
+					<a class="waves-effect waves-light btn teal accent-4 confirm_btn">同意</a>
 				</div>
 				<div class="col l4 hide-on-med-and-down">
 					<br>
 				</div>
 				<div class="col l4 s6 right-align" style="text-align:center;font-weight:300">
-					<a class="waves-effect waves-light btn teal accent-4">拒绝</a>
+					<a class="waves-effect waves-light btn teal accent-4 decline_btn">拒绝</a>
 				</div>
 			</div>
 			</li>
@@ -111,6 +111,73 @@
 </footer>
 <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
-<script type="text/javascript">!function(n){n(function(){n(".button-collapse").sideNav()})}(jQuery);</script>
+<script type="text/javascript">
+    $(function () {
+
+
+      $(".confirm_btn").on("click", function () {
+          var box = $(this).parents(".section")
+          var icon = $(this).children();
+        var user_id = $(this).attr("user-id");
+        var csrf = $(this).attr("csrf");
+          var text = $("#vote_"+vote+"_text");
+        $.ajax({
+          url: '/vote/',
+          data: {
+            'user_id': user_id,
+            'csrfmiddlewaretoken': csrf
+          },
+          type: 'post',
+          cache: false,
+          success: function (data) {
+
+              if( data == "cant"){
+                console.log(data);
+              }else{
+
+                  box.remove();
+              }
+          }
+        });
+        return false;
+      });
+
+      $(".add_friend_btn").on("click", function () {
+          var link = $(this);
+          var icon = $(this).children();
+        var friend = $(this).attr("user-id");
+        var csrf = $(this).attr("csrf");
+          var text = $("#friend_"+friend+"_text");
+        $.ajax({
+          url: '/add_friend/',
+          data: {
+            'user_id': friend,
+            'csrfmiddlewaretoken': csrf
+          },
+          type: 'post',
+          cache: false,
+          success: function (data) {
+
+              if( data == "cant"){
+                console.log(data);
+              }else {
+                  if (link.hasClass("unadd_friend_btn")) {
+                      link.removeClass("teal accent-4 unadd_friend_btn").addClass("white");
+                      icon.removeClass("person_pin_white").addClass("person_pin");
+                      text.html("加好友")
+                  } else {
+                      link.removeClass("white").addClass("teal accent-4 unadd_friend_btn");
+                      icon.removeClass("person_pin").addClass("person_pin_white");
+                      text.html("申请中")
+                  }
+                  console.log(data);
+              }
+          }
+        });
+        return false;
+      });
+
+    });
+</script>
 </body>
 </html>
