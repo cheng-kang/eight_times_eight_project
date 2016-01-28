@@ -6,9 +6,8 @@
 <title>8 x 8 - 首页</title>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
-<link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection">
 <style type="text/css">
-.btn-floating>i.thumb_up{color:#12c5a2}.btn-floating>i.person_pin{color:#12c5a2}
+.btn-floating>i.thumb_up{color:#12c5a2}.btn-floating>i.person_pin{color:#12c5a2}.btn-floating>i.thumb_up_white{color:#fff}.btn-floating>i.person_pin_white{color:#fff}
 </style>
 </head>
 <body>
@@ -70,9 +69,39 @@
 					</ul>
 				</div>
 			</div>
+            {% if user.pk %}
 			<div class="row" style="margin-left:8%;margin-right:8%;margin-bottom:20px">
 				<div class="col s4 left-align" style="text-align:center;font-weight:300">
-					<a class="btn-floating btn-large waves-effect waves-light white"><i class="material-icons thumb_up">thumb_up</i></a><br>
+                    {% if item.pk in voted_id_list %}
+					<a class="btn-floating btn-large waves-effect waves-light teal accent-4 unvote_btn" user-id="{{ item.pk }}" csrf="{{ csrf_token }}" ><i class="material-icons thumb_up_white">thumb_up</i></a><br>
+					<span id="vote_{{ item.pk }}_text">取消</span>
+                    {% else %}
+					<a class="btn-floating btn-large waves-effect waves-light white vote_btn" user-id="{{ item.pk }}" csrf="{{ csrf_token }}"><i class="material-icons thumb_up">thumb_up</i></a><br>
+					<span id="vote_{{ item.pk }}_text">推荐</span>
+                    {% endif %}
+				</div>
+				<div class="col s4 valign">
+					<br>
+					<span style="color:#00bfa5;font-weight:300"><span id="vote_{{ item.pk }}">{{ item.votes }}</span>次<br>
+					『推荐』</span>
+				</div>
+				<div class="col s4 right-align" style="text-align:center;font-weight:300">
+                    {% if item.pk in friend_id_list %}
+					<a class="btn-floating btn-large waves-effect waves-light teal accent-4"><i class="material-icons person_pin_white">person_pin</i></a><br>
+					好友
+                    {% elif item.pk in pending_friend_id_list %}
+					<a class="btn-floating btn-large waves-effect waves-light teal accent-3 "><i class="material-icons person_pin_white">person_pin</i></a><br>
+					申请中
+                    {% else %}
+					<a class="btn-floating btn-large waves-effect waves-light white add_friend_btn" user-id="{{ item.pk }} csrf="{{ csrf_token }}"><i class="material-icons person_pin">person_pin</i></a><br>
+					加好友
+                    {% endif %}
+				</div>
+			</div>
+            {% else %}
+			<div class="row" style="margin-left:8%;margin-right:8%;margin-bottom:20px">
+				<div class="col s4 left-align" style="text-align:center;font-weight:300">
+					<a class="btn-floating btn-large waves-effect waves-light white" href="/signin"><i class="material-icons thumb_up">thumb_up</i></a><br>
 					推荐
 				</div>
 				<div class="col s4 valign">
@@ -81,10 +110,11 @@
 					『推荐』</span>
 				</div>
 				<div class="col s4 right-align" style="text-align:center;font-weight:300">
-					<a class="btn-floating btn-large waves-effect waves-light white"><i class="material-icons person_pin">person_pin</i></a><br>
+					<a class="btn-floating btn-large waves-effect waves-light white" href="/signin"><i class="material-icons person_pin">person_pin</i></a><br>
 					加好友
 				</div>
 			</div>
+            {% endif %}
 			<div class="row">
 			</div>
 		</div>
@@ -100,6 +130,102 @@
 </footer>
 <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
-<script type="text/javascript">!function(n){n(function(){n(".button-collapse").sideNav()})}(jQuery);</script>
+<script type="text/javascript">
+    $(function () {
+
+
+      $(".vote_btn").on("click", function () {
+          var link = $(this);
+          var icon = $(this).children();
+        var vote = $(this).attr("user-id");
+        var csrf = $(this).attr("csrf");
+          var text = $("#vote_"+vote+"_text");
+        $.ajax({
+          url: '/vote/',
+          data: {
+            'vote': vote,
+            'csrfmiddlewaretoken': csrf
+          },
+          type: 'post',
+          cache: false,
+          success: function (data) {
+
+              if(link.hasClass("vote_btn")) {
+                  link.removeClass("vote_btn white").addClass("teal accent-4 unvote_btn");
+                  icon.removeClass("thumb_up").addClass("thumb_up_white");
+                  text.html("取消")
+              }else if(link.hasClass("unvote_btn")){
+                  link.removeClass("teal accent-4 unvote_btn").addClass("vote_btn white");
+                  icon.removeClass("thumb_up_white").addClass("thumb_up");
+                  text.html("推荐")
+              }
+              console.log(data);
+              $("#vote_"+vote).html(data);
+          }
+        });
+        return false;
+      });
+
+      $(".unvote_btn").on("click", function () {
+          var link = $(this);
+          var icon = $(this).children();
+        var vote = $(this).attr("user-id");
+        var csrf = $(this).attr("csrf");
+          var text = $("#vote_"+vote+"_text");
+        $.ajax({
+          url: '/vote/',
+          data: {
+            'vote': vote,
+            'csrfmiddlewaretoken': csrf
+          },
+          type: 'post',
+          cache: false,
+          success: function (data) {
+
+              if(link.hasClass("vote_btn")) {
+                  link.removeClass("vote_btn white").addClass("teal accent-4 unvote_btn");
+                  icon.removeClass("thumb_up").addClass("thumb_up_white");
+                  text.html("取消")
+              }else if(link.hasClass("unvote_btn")){
+                  link.removeClass("teal accent-4 unvote_btn").addClass("vote_btn white");
+                  icon.removeClass("thumb_up_white").addClass("thumb_up");
+                  text.html("推荐")
+              }
+              $("#vote_"+vote).html(data);
+          }
+        });
+        return false;
+      });
+
+      $("ul.stream").on("click", ".comment", function () {
+        var post = $(this).closest(".post");
+        if ($(".comments", post).hasClass("tracking")) {
+          $(".comments", post).slideUp();
+          $(".comments", post).removeClass("tracking");
+        }
+        else {
+          $(".comments", post).show();
+          $(".comments", post).addClass("tracking");
+          $(".comments input[name='post']", post).focus();
+          var feed = $(post).closest("li").attr("feed-id");
+          $.ajax({
+            url: '/feeds/comment/',
+            data: { 'feed': feed },
+            cache: false,
+            beforeSend: function () {
+              $("ol", post).html("<li class='loadcomment'><img src='/static/img/loading.gif'></li>");
+            },
+            success: function (data) {
+              $("ol", post).html(data);
+              $(".comment-count", post).text($("ol li", post).not(".empty").length);
+            }
+          });
+        }
+        return false;
+      });
+
+
+    });
+</script>
 </body>
 </html>

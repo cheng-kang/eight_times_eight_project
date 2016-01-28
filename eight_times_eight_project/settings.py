@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.humanize',
 
+
     'eight_times_eight_project.activities',
     'eight_times_eight_project.auth_new',
     'eight_times_eight_project.core',

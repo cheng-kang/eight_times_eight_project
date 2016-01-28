@@ -84,6 +84,62 @@ class Profile(models.Model):
                 to_user=feed.user, 
                 feed=feed).delete()
 
+    def notify_voted(self, user):
+        if self.user != user:
+            Notification(notification_type=Notification.VOTED,
+                from_user=self.user,
+                to_user=user,
+                         ).save()
+
+    def unotify_voted(self, user):
+        if self.user != user:
+            Notification.objects.filter(notification_type=Notification.VOTED,
+                from_user=self.user,
+                to_user=user,
+                ).delete()
+
+    def notify_added(self, user):
+        if self.user != user:
+            Notification(notification_type=Notification.ADDED_FRIEND,
+                from_user=self.user,
+                to_user=user,
+                         ).save()
+
+    def unotify_added(self, user):
+        if self.user != user:
+            Notification.objects.filter(notification_type=Notification.ADDED_FRIEND,
+                from_user=self.user,
+                to_user=user,
+                ).delete()
+
+    def notify_confirmed(self, user):
+        if self.user != user:
+            Notification(notification_type=Notification.CONFIRMED_FRIEND,
+                from_user=self.user,
+                to_user=user,
+                         ).save()
+
+    def unotify_confirmed(self, user):
+        if self.user != user:
+            Notification.objects.filter(notification_type=Notification.CONFIRMED_FRIEND,
+                from_user=self.user,
+                to_user=user,
+                ).delete()
+
+    def notify_declined(self, user):
+        if self.user != user:
+            Notification(notification_type=Notification.DECLINED_FRIEND,
+                from_user=self.user,
+                to_user=user,
+                         ).save()
+
+    def unotify_declined(self, user):
+        if self.user != user:
+            Notification.objects.filter(notification_type=Notification.DECLINED_FRIEND,
+                from_user=self.user,
+                to_user=user,
+                ).delete()
+
     def notify_commented(self, feed):
         if self.user != feed.user:
             Notification(notification_type=Notification.COMMENTED,

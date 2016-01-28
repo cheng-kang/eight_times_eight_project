@@ -15,17 +15,45 @@ from eight_times_eight_project.feeds.models import Feed
 from eight_times_eight_project.feeds.views import FEEDS_NUM_PAGES
 from eight_times_eight_project.feeds.views import feeds
 from eight_times_eight_project.auth_new.models import Profile
+from eight_times_eight_project.decorators import ajax_required
 
+from eight_times_eight_project.activities.models import Activity, Notification
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseForbidden
 
 def home(request):
 
     if request.user:
         user = request.user
+
+        friends = Activity.objects.filter(activity_type=Activity.CONFIRM_FRIEND, to_user=user.pk)
+        friend_id_list = []
+        for item in friends:
+            friend_id_list.append(item.user.pk)
+
+        pending_friends = Activity.objects.filter(activity_type=Activity.ADD_FRIEND, user=user.pk)
+        pending_friend_id_list = []
+        for item in pending_friends:
+            pending_friend_id_list.append(item.to_user)
+
+        voted = Activity.objects.filter(activity_type=Activity.VOTE, user=user)
+        voted_id_list = []
+        for item in voted:
+            voted_id_list.append(item.to_user)
+
+
     else:
         user = None
+        friend_id_list = None
+        pending_friend_id_list = None
+        voted_id_list = None
 
     profiles = Profile.objects.all().order_by("votes")[:8]
-    return render(request, 'core/index.html', {'users':profiles, "user": user })
+    return render(request, 'core/index.html', {'users':profiles,
+                                               "user": user,
+                                               'friend_id_list': friend_id_list,
+                                               'pending_friend_id_list': pending_friend_id_list,
+                                               'voted_id_list': voted_id_list,
+                                               })
 
 @login_required
 def network(request):
@@ -70,6 +98,14 @@ def me(request):
     change_password_form = ChangePasswordForm(instance=user)
 
     return render(request, 'core/me.html', {'user':user, 'profile_form':profile_form, 'change_password_form':change_password_form, 'uploaded_picture': uploaded_picture})
+
+@login_required
+def friends(request):
+    user = request.user
+
+    friends = Activity.objects.filter(activity_type=Activity.CONFIRM_FRIEND, to_user=user.pk)
+
+    return render(request, 'core/friends.html', {'user':user, 'friends': friends})
 
 @login_required
 def update_profile(request):
@@ -161,3 +197,125 @@ def save_uploaded_picture(request):
     except Exception, e:
         pass
     return redirect('/me/')
+
+
+@login_required
+@ajax_required
+def vote(request):
+    vote_id = request.POST['vote']
+    to_user = User.objects.get(pk=vote_id)
+    user = request.user
+    vote = Activity.objects.filter(activity_type=Activity.VOTE, to_user=vote_id, user=user)
+    if vote:
+        to_user.profile.votes -= 1
+        to_user.save()
+        user.profile.unotify_voted(to_user)
+        vote.delete()
+    else:
+        vote = Activity(activity_type=Activity.VOTE, to_user=vote_id, user=user)
+        vote.save()
+        to_user.profile.votes += 1
+        to_user.save()
+        user.profile.notify_voted(to_user)
+    return HttpResponse(to_user.profile.votes)
+
+@login_required
+@ajax_required
+def add_friend(request):
+    user_id = request.POST['user_id']
+    to_user = User.objects.get(pk=user_id)
+    user = request.user
+    friend = Activity.objects.filter(activity_type=Activity.ADD_FRIEND, to_user=user_id, user=user)
+
+    m = ""
+    if friend:
+        user.profile.unotify_added(to_user)
+        # to_user.profile.notify_added(user)
+        friend.delete()
+        m = "cancel"
+    else:
+        friend = Activity(activity_type=Activity.ADD_FRIEND, to_user=user_id, user=user)
+        friend.save()
+        user.profile.notify_added(to_user)
+        m = "sent"
+    return HttpResponse(m)
+
+# 此函数逻辑与发送好友申请函数逻辑略有不同
+@login_required
+@ajax_required
+def confirm_friend(request):
+    user_id = request.POST['user_id']
+    to_user = User.objects.get(pk=user_id)
+    user = request.user
+    friend = Activity.objects.filter(activity_type=Activity.ADD_FRIEND, to_user=user.pk, user=to_user)
+
+    m = ""
+    # 如果存在该好友申请activity,则将其修改为确认好友activity,并添加当前用户确认好友activity
+    if friend:
+        friend.activity_type = Activity.CONFIRM_FRIEND
+        friend.save()
+
+        new_friend = Activity(activity_type=Activity.CONFIRM_FRIEND, to_user=user_id, user=user)
+        # 给双方好友数 +1 并保存
+        to_user.profile.friends += 1
+        to_user.save()
+        user.profile.friends += 1
+        user.save()
+
+        # 发送好友添加成功通知
+        user.profile.notify_confirmed(to_user)
+        to_user.profile.notify_confirmed(user)
+        friend.delete()
+        m = "ok"
+    # 如不存在则报错
+    else:
+        m = "wrong"
+    return HttpResponse(m)
+
+@login_required
+@ajax_required
+def remove_friend(request):
+    user_id = request.POST['user_id']
+    to_user = User.objects.get(pk=user_id)
+    user = request.user
+    friend = Activity.objects.filter(activity_type=Activity.CONFIRM_FRIEND, to_user=user.pk, user=to_user)
+
+    # 删除该activity
+    if friend:
+        friend.delete()
+
+        # 给双方好友数 -1 并保存
+        to_user.profile.friends -= 1
+        to_user.save()
+
+    # 同上对该好友进行操作
+    friend = Activity.objects.filter(activity_type=Activity.CONFIRM_FRIEND, to_user=user_id, user=user)
+
+    if friend:
+        friend.delete()
+
+        user.profile.friends -= 1
+        user.save()
+
+    # 发送好友删除成功通知
+    # user.profile.notify_removed(to_user)
+    # to_user.profile.notify_removed(user)
+
+    return HttpResponse("removed")
+
+@login_required
+@ajax_required
+def decline_friend(request):
+    user_id = request.POST['user_id']
+    to_user = User.objects.get(pk=user_id)
+    user = request.user
+    friend = Activity.objects.filter(activity_type=Activity.ADD_FRIEND, to_user=user.pk, user=to_user)
+
+    # 删除该activity
+    if friend:
+        friend.delete()
+
+    # 发送通知
+    to_user.profile.notify_declined(user)
+
+    return HttpResponse("declined")

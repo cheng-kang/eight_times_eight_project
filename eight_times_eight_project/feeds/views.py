@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseForbidden
 from eight_times_eight_project.feeds.models import Feed
+from eight_times_eight_project.auth_new.models import User
 from eight_times_eight_project.activities.models import Activity, Notification
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.template.loader import render_to_string
