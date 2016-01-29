@@ -63,16 +63,13 @@ def edit_experience(request):
 @login_required
 @ajax_required
 def delete_experience(request):
-    try:
-        user = request.user
-        experience_id = request.POST['experience_id']
+    user = request.user
+    experience_id = request.POST['experience_id']
 
-        experience = Experience.get(pk=experience_id, user=user)
-        if experience:
-            experience.delete()
+    experience = Experience.objects.get(pk=experience_id, user=user)
+    if experience:
+        experience.delete()
 
-            return HttpResponse("deleted")
-        else:
-            return HttpResponseForbidden()
-    except Exception, e:
-        return HttpResponseBadRequest()
+        return HttpResponse("deleted")
+    else:
+        return HttpResponseForbidden()

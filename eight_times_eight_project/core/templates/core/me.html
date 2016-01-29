@@ -720,7 +720,30 @@
             return false;
 
         });
-    
+
+
+      $(".delete_btn").on("click", function () {
+          var csrf = $(this).attr("csrf");
+          var exp_id = $(this).attr("exp-id");
+
+          console.log($(this).prop("id"));
+          console.log($(this).prop("id") == 'work_edit_btn');
+
+            $.ajax({
+              url: '/experience/delete/',
+              data: {
+                'experience_id': exp_id,
+                'csrfmiddlewaretoken': csrf
+              },
+              type: 'post',
+              cache: false,
+              success: function (data) {
+                  window.location.reload();
+              }
+            });
+            return false;
+
+        });
     
         });
       {% if messages %}
