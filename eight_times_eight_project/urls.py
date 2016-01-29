@@ -2,8 +2,11 @@ from django.conf.urls import patterns, include, url
 from django.conf import settings
 from django.conf.urls.static import static
 
+from django.contrib import admin
+admin.autodiscover()
 
 urlpatterns = patterns('',
+    url(r'^admin/', include(admin.site.urls)),
     url(r'^$', 'eight_times_eight_project.core.views.home', name='home'),
     url(r'^signin', 'django.contrib.auth.views.login', {'template_name': 'core/cover.html'}, name='signin'),
     url(r'^signout', 'django.contrib.auth.views.logout', {'next_page': '/'}, name='signout'),
@@ -28,5 +31,8 @@ urlpatterns = patterns('',
     url(r'^search/$', 'eight_times_eight_project.search.views.search', name='search'),
     url(r'^user/(?P<id>[^/]+)/$', 'eight_times_eight_project.core.views.profile', name='profile'),
     url(r'^vote/$', 'eight_times_eight_project.core.views.vote', name='vote'),
+    url(r'^experience/add/', 'eight_times_eight_project.experience.views.new_experience', name='new_experience'),
+    url(r'^experience/edit/', 'eight_times_eight_project.experience.views.edit_experience', name='edit_experience'),
+    url(r'^experience/delete/', 'eight_times_eight_project.experience.views.delete_experience', name='delete_experience'),
     url(r'^i18n/', include('django.conf.urls.i18n', namespace='i18n')),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

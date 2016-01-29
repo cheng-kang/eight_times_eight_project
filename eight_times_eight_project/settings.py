@@ -47,6 +47,7 @@ INSTALLED_APPS = (
     'eight_times_eight_project.feeds',
     'eight_times_eight_project.messages_new',
     'eight_times_eight_project.search',
+    'eight_times_eight_project.experience'
 
 )
 
@@ -58,6 +59,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
 )
 
 ROOT_URLCONF = 'eight_times_eight_project.urls'
@@ -112,6 +114,17 @@ MEDIA_URL = '/media/'
 TEMPLATE_DIRS = (
     PROJECT_DIR.child('templates'),
 )
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.debug',
+    'django.core.context_processors.media',
+    'django.core.context_processors.static',
+    'django.core.context_processors.tz',
+    'django.core.context_processors.request',
+    'django.contrib.messages.context_processors.messages',
+)
+
 
 LOGIN_URL = '/signin'
 LOGIN_REDIRECT_URL = '/me/'

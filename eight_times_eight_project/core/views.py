@@ -20,6 +20,7 @@ from eight_times_eight_project.decorators import ajax_required
 from eight_times_eight_project.activities.models import Activity, Notification
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseForbidden
 from eight_times_eight_project.messages_new.models import Message
+from eight_times_eight_project.experience.models import Experience
 
 def home(request):
 
@@ -125,7 +126,29 @@ def me(request):
     profile_form = ProfileForm(instance=user)
     change_password_form = ChangePasswordForm(instance=user)
 
-    return render(request, 'core/me.html', {'user':user, 'profile_form':profile_form, 'change_password_form':change_password_form, 'uploaded_picture': uploaded_picture})
+    work = Experience.objects.filter(user=user, experience_type=Experience.WORK)
+    edu = Experience.objects.filter(user=user, experience_type=Experience.EDU)
+    project = Experience.objects.filter(user=user, experience_type=Experience.PROJECT)
+    other = Experience.objects.filter(user=user, experience_type=Experience.OTHER)
+    work_modal = work
+    edu_modal = edu
+    project_modal = project
+    other_modal = other
+
+    return render(request, 'core/me.html', {
+        'user':user,
+        'profile_form':profile_form,
+        'change_password_form':change_password_form,
+        'uploaded_picture': uploaded_picture,
+        'work': work,
+        'edu': edu,
+        'project': project,
+        'other': other,
+        'work_modal': work_modal,
+        'edu_modal': edu_modal,
+        'project_modal': project_modal,
+        'other_modal': other_modal,
+    })
 
 @login_required
 def friends(request):
